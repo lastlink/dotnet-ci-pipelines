@@ -65,6 +65,7 @@ jobs:
       continueOnError: true
       enabled: false
 
+# sometimes works but can't save output besides log
 - job: ResharperCli
   steps:
     - task: NuGetToolInstaller@1
@@ -83,6 +84,8 @@ jobs:
       inputs:
         script: |
           echo | dir
+          echo | dir d:\a\1\a\
+          echo | $(Build.ArtifactStagingDirectory)
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
@@ -90,6 +93,7 @@ jobs:
         publishLocation: 'Container'
       continueOnError: true
 
+# works great, also works on linux
 - job: ResharperCliInspectCode
   steps:
     - task: NuGetToolInstaller@1
@@ -129,10 +133,11 @@ jobs:
     - task: PublishBuildArtifacts@1
       continueOnError: true
       inputs:
-        PathtoPublish: '$(Agent.TempDirectory)\inspectcodeReport.html'
+        PathtoPublish: 'inspectcodeReport.html'
         ArtifactName: 'inspectcodeReport'
         publishLocation: 'Container'
 
+# works not much output
 - job: BuildQualityChecks
   steps:
     - task: NuGetToolInstaller@1
@@ -143,6 +148,7 @@ jobs:
       displayName: 'Check build quality'
       continueOnError: true
 
+# works only on linux
 - job: codeclimate
   pool:
     vmImage: 'Ubuntu-16.04'
