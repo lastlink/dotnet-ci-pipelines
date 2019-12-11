@@ -1,0 +1,51 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+pr:
+- master
+
+trigger:
+  branches:
+    include:
+    - releases/*
+    exclude:
+    - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '*.sln'
+  builPdlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  DOCKER_DRIVER: overlay
+  CONTAINER_IMAGE: codeclimate/codeclimate
+  CONTAINER_TAG: '0.85.2'
+  RESHARPER_CLI_NAME: 'JetBrains.ReSharper.CommandLineTools.Unix'
+  RESHARPER_CLI_VERSION: "2019.2.3"
+  # set RESHARPER_CLI_VERSION=2019.2.3
+
+jobs:
+- job: test
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        arguments: '--collect:"XPlat Code Coverage"'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
