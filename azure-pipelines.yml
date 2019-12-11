@@ -11,8 +11,11 @@ pool:
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+  builPdlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  DOCKER_DRIVER: overlay
+  CONTAINER_IMAGE: codeclimate/codeclimate
+  CONTAINER_TAG: '0.85.2'
 
 jobs:
 - job: test
@@ -43,17 +46,58 @@ jobs:
         ArtifactName: 'CodeQuality'
         publishLocation: 'Container'
 
-- job: codequality
-  steps:
-      - task: NuGetToolInstaller@1
 
-      - task: NuGetCommand@2
-        inputs:
-          restoreSolution: '$(solution)'
-        
-      - task: CmdLine@2
-        inputs:
-          script: |
-            echo Write your commands here
-            
-            echo Hello world
+- job: SonarCloudQualityGate
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: eshopworld.SonarCloudQualityGate.SonarCloudQualityGate.SonarCloudQualityGate@1
+      displayName: SonarCloudQualityGate
+      continueOnError: true
+
+- job: ResharperCli
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: alanwales.resharper-code-analysis.custom-build-task.ResharperCli@2
+      displayName: 'Automated code quality checks'
+      inputs:
+        solutionOrProjectPath: 'MyProject.sln'
+      continueOnError: true
+
+- job: ResharperCli
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: mspremier.BuildQualityChecks.QualityChecks-task.BuildQualityChecks@6
+      displayName: 'Check build quality'
+      continueOnError: true
+
+- job: codeclimate
+  variables:
+      DOCKER_DRIVER: overlay
+      CONTAINER_IMAGE: codeclimate/codeclimate
+      CONTAINER_TAG: '0.85.2'
+  steps:  
+    - task: DockerInstaller@0
+      displayName: 'Install Docker 17.09.0-ce'
+      continueOnError: false     
+    - task: CmdLine@2
+      inputs:
+        script: |
+          echo Write your commands here
+          
+          echo Hello world
+    - task: CmdLine@2
+      inputs:
+        script: |
+          docker pull $CONTAINER_IMAGE
+          mkdir -p CodeQuality
+          docker run  --env CODECLIMATE_DEBUG=1 --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc 
+          $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
