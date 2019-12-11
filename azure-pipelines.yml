@@ -99,11 +99,6 @@ jobs:
           # curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.%RESHARPER_CLI_VERSION%/%RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip"
           # powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
           echo | dir
-
-          echo "powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper"
-          powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
-
-          resharper/inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
     - task: ExtractFiles@1
       continueOnError: true
       inputs:
