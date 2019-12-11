@@ -79,7 +79,7 @@ jobs:
       continueOnError: true
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Agent.TempDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
         ArtifactName: 'inspectcodeReport'
         publishLocation: 'Container'
       continueOnError: true
@@ -94,9 +94,10 @@ jobs:
       continueOnError: true
       inputs:
         script: |
-          curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
+          curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
 
           # curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.%RESHARPER_CLI_VERSION%/%RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip"
+          # powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
 
           powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
 
@@ -128,8 +129,20 @@ jobs:
       displayName: 'Install Docker 17.09.0-ce'
       continueOnError: false
     - task: CmdLine@2
+      displayName: 'Pull codeclimate docker image'
+      continueOnError: false
       inputs:
         script: |
           docker pull $CONTAINER_IMAGE
+    - task: CmdLine@2
+      displayName: ' mkdir -p CodeQuality'
+      continueOnError: false
+      inputs:
+        script: |
           mkdir -p CodeQuality
+    - task: CmdLine@2
+      displayName: 'run code codeclimate'
+      continueOnError: false
+      inputs:
+        script: |
           docker run  --env CODECLIMATE_DEBUG=1 --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
