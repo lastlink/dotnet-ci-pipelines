@@ -127,14 +127,14 @@ jobs:
       continueOnError: true
       inputs:
         script: |
-          echo | dir
-          echo | dir resharper
-          resharper\inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
+          mkdir -p code_quality
+          resharper\inspectcode.exe "MyProject.sln" --output=code_quality\inspectcodeReport.html --format=Html
+          resharper\dupfinder.exe "MyProject.sln" --output=code_quality\dupfinderReport.html --format=Html
     - task: PublishBuildArtifacts@1
       continueOnError: true
       inputs:
-        PathtoPublish: 'inspectcodeReport.html'
-        ArtifactName: 'inspectcodeReport'
+        PathtoPublish: 'code_quality'
+        ArtifactName: 'Code_Quality'
         publishLocation: 'Container'
 
 # works not much output
@@ -182,5 +182,5 @@ jobs:
       continueOnError: true
       inputs:
         PathtoPublish: 'codeclimateReport.html'
-        ArtifactName: 'inspectcodeReport'
+        ArtifactName: 'Code_Quality'
         publishLocation: 'Container'
