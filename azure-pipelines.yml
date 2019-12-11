@@ -78,20 +78,20 @@ jobs:
         solutionOrProjectPath: 'MyProject.sln'
         additionalArguments: '/disable-settings-layers:SolutionPersonal --output=inspectcodeReport.html --format=Html'
       continueOnError: true
-    - task: CmdLine@2
-      displayName: 'dir contents'
-      continueOnError: true
-      inputs:
-        script: |
-          echo | dir
-          echo | dir d:\a\1\a\
-          echo | $(Build.ArtifactStagingDirectory)
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
-        ArtifactName: 'inspectcodeReport'
-        publishLocation: 'Container'
-      continueOnError: true
+    # - task: CmdLine@2
+    #   displayName: 'dir contents'
+    #   continueOnError: true
+    #   inputs:
+    #     script: |
+    #       echo | dir
+    #       echo | dir d:\a\1\a\
+    #       echo | $(Build.ArtifactStagingDirectory)
+    # - task: PublishBuildArtifacts@1
+    #   inputs:
+    #     PathtoPublish: '$(Build.ArtifactStagingDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
+    #     ArtifactName: 'inspectcodeReport'
+    #     publishLocation: 'Container'
+    #   continueOnError: true
 
 # works great, also works on linux
 - job: ResharperCliInspectCode
@@ -115,13 +115,13 @@ jobs:
         archiveFilePatterns: '$(RESHARPER_CLI_NAME).$(RESHARPER_CLI_VERSION).zip' 
         destinationFolder: resharper
         # cleanDestinationFolder: true 
-    - task: CmdLine@2
-      displayName: 'unzip tools'
-      continueOnError: true
-      inputs:
-        script: |
-          echo "powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper"
-          powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
+    # - task: CmdLine@2
+    #   displayName: 'unzip tools'
+    #   continueOnError: true
+    #   inputs:
+    #     script: |
+    #       echo "powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper"
+    #       powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
     - task: CmdLine@2
       displayName: 'inspectcode'
       continueOnError: true
