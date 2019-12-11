@@ -98,7 +98,8 @@ codeclimate:
        --volume /tmp/cc:/tmp/cc 
        $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
   artifacts:
-    paths: [report.html]
+    paths:
+      - CodeQuality/
   dependencies: []
   except:
     variables:

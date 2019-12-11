@@ -9,6 +9,9 @@ Based off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/gitlab
     * [ ] coverage
         * [x] build in
         * [ ] coverlet
+            * [] badge_branchcoverage [![badge_branchcoverage](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_branchcoverage.svg)](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_branchcoverage.svg)
+            * [] badge_combined [![badge_branchcoverage](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_combined.svg)](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_combined.svg)
+            * [] badge_linecoverage [![badge_branchcoverage](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_linecoverage.svg)](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_linecoverage.svg)
     * [ ] build per job?
 * [x] Tests - Junit
 * [x] Coverage - coverlet
