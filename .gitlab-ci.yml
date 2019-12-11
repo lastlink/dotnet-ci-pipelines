@@ -107,7 +107,7 @@ codeclimate:
     variables:
       - $CODE_QUALITY_DISABLED
 
-# takes upwards of 1hr will need to increase ci/cd max time maybe 4hrs, should use DotSettings file to exclude lib files
+# should take less than 10 minutes if taking longer just cancel rerun, should use DotSettings file to exclude lib files
 resharper_inspect:
   when: manual
   cache:
@@ -125,6 +125,8 @@ resharper_inspect:
     - mkdir -p CodeQuality
     - files=(*.sln)
     - sh resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
+  timeout: 5m
+  retry: 2
   artifacts:
     paths:
       - CodeQuality/
