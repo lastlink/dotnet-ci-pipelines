@@ -98,7 +98,9 @@ jobs:
 
           # curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.%RESHARPER_CLI_VERSION%/%RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip"
           # powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
+          echo | dir
 
+          echo "powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper"
           powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
 
           resharper/inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
@@ -133,7 +135,7 @@ jobs:
       continueOnError: false
       inputs:
         script: |
-          docker pull $CONTAINER_IMAGE
+          docker pull codeclimate/codeclimate
     - task: CmdLine@2
       displayName: ' mkdir -p CodeQuality'
       continueOnError: false
@@ -145,4 +147,4 @@ jobs:
       continueOnError: false
       inputs:
         script: |
-          docker run  --env CODECLIMATE_DEBUG=1 --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
+          docker run  --env CODECLIMATE_DEBUG=1 --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.85.2 analyze -f html > CodeQuality/codeclimateReport.html
