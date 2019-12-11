@@ -77,6 +77,12 @@ jobs:
         solutionOrProjectPath: 'MyProject.sln'
         additionalArguments: '/disable-settings-layers:SolutionPersonal --output=inspectcodeReport.html --format=Html'
       continueOnError: true
+    - task: CmdLine@2
+      displayName: 'dir contents'
+      continueOnError: true
+      inputs:
+        script: |
+          echo | dir
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
@@ -119,7 +125,7 @@ jobs:
         script: |
           echo | dir
           echo | dir resharper
-          resharper/inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
+          resharper\inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
     - task: PublishBuildArtifacts@1
       continueOnError: true
       inputs:
