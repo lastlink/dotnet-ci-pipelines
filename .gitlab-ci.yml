@@ -54,15 +54,17 @@ debug:
     - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
     # each reporttype must be a separate line, doesn't work together ; separated
     - ls -ld ${CI_PROJECT_DIR}/**/TestResults/*
+    - mkdir -p public
     - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:TextSummary;
     - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:Html;
-    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:Badges;
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:public" -reportTypes:Badges;
     - ls Reports_Coverage
     - cat ./Reports_Coverage/Summary.txt | grep 'Line coverage'
   coverage: /Line coverage[\s\S].+%/
   artifacts:
     paths:
       - Reports_Coverage/
+      - public
     reports:
       junit:
         - '*.Test/TestResults/TestResults.xml'
