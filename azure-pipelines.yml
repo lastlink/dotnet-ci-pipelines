@@ -10,7 +10,7 @@ trigger:
   branches:
     include:
     - releases/*
-    exlcude:
+    exclude:
     - master
 
 pool:
@@ -49,15 +49,19 @@ jobs:
 
 
 # doesn't work
-# - job: SonarCloudQualityGate
-#   steps:
-#     - task: NuGetToolInstaller@1
-#     - task: NuGetCommand@2
-#       inputs:
-#         restoreSolution: '$(solution)'
-#     - task: eshopworld.SonarCloudQualityGate.SonarCloudQualityGate.SonarCloudQualityGate@1
-#       displayName: SonarCloudQualityGate
-#       continueOnError: true
+- job: SonarCloudQualityGate
+  enabled: false
+  steps:
+    - task: NuGetToolInstaller@1
+      enabled: false
+    - task: NuGetCommand@2
+      enabled: false
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: eshopworld.SonarCloudQualityGate.SonarCloudQualityGate.SonarCloudQualityGate@1
+      displayName: SonarCloudQualityGate
+      continueOnError: true
+      enabled: false
 
 - job: ResharperCli
   steps:
