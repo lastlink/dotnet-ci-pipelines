@@ -87,14 +87,14 @@ codeclimate:
        --volume "$PWD":/code 
        --volume /var/run/docker.sock:/var/run/docker.sock 
        --volume /tmp/cc:/tmp/cc 
-       $CONTAINER_IMAGE:$CI_BUILD_REF analyze -f html > CodeQuality/codeclimateReport.html
+       $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
     - docker run 
        --env CODECLIMATE_DEBUG=1 
        --env CODECLIMATE_CODE="$PWD" 
        --volume "$PWD":/code 
        --volume /var/run/docker.sock:/var/run/docker.sock 
        --volume /tmp/cc:/tmp/cc 
-       $CONTAINER_IMAGE:$CI_BUILD_REF analyze -f json > CodeQuality/codeclimateReport.json
+       $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
   artifacts:
     paths: [report.html]
   dependencies: []
