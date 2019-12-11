@@ -2,6 +2,23 @@
 
 Based off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/gitlab-ci-example-dotnetcore). Goal to have example pipelines for major git source control dev ops including github, azure devops, gitlab, bitbucket, and etc. Please do a pull request to the proper source control pipeline that you are trying to update.
 
+## TOC
+* GitHub Actions
+* Bitbucket
+* Azure DevOps
+* Gitlab pipelines
+
+### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines)
+* [ ] Badges
+* [ ] Tests - working display
+* [ ] CodeClimate
+* [ ] resharper cli
+
+### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
+* [ ] Badges
+* [ ] Tests - working display
+* [ ] CodeClimate
+* [ ] resharper cli
 
 ### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master)
 * [ ] Badges?
