@@ -50,7 +50,6 @@ jobs:
 
 # doesn't work
 - job: SonarCloudQualityGate
-  enabled: false
   steps:
     - task: NuGetToolInstaller@1
       enabled: false
