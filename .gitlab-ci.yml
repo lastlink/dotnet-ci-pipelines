@@ -80,6 +80,7 @@ codeclimate:
   stage: test
   script:
     - docker pull $CONTAINER_IMAGE
+    - mkdir -p CodeQuality
     - docker run 
        --env CODECLIMATE_DEBUG=1 
        --env CODECLIMATE_CODE="$PWD" 
