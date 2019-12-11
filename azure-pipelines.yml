@@ -102,7 +102,7 @@ jobs:
     - task: ExtractFiles@1
       continueOnError: true
       inputs:
-        archiveFilePatterns: '$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip' 
+        archiveFilePatterns: '$(RESHARPER_CLI_NAME).$(RESHARPER_CLI_VERSION).zip' 
         destinationFolder: resharper
         # cleanDestinationFolder: true 
     - task: CmdLine@2
@@ -117,6 +117,8 @@ jobs:
       continueOnError: true
       inputs:
         script: |
+          echo | dir
+          echo | dir resharper
           resharper/inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
     - task: PublishBuildArtifacts@1
       continueOnError: true
