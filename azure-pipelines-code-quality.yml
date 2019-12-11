@@ -6,6 +6,8 @@
 pr:
 - master
 
+name: code quality pipeline
+
 trigger:
   branches:
     include:
