@@ -80,7 +80,7 @@ codeclimate:
     - docker:dind
   stage: build
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $CONTAINER_IMAGE:$CONTAINER_TAG
+    - docker pull $CONTAINER_IMAGE
     - docker build --cache-from $CONTAINER_IMAGE:$CONTAINER_TAG -t $CONTAINER_IMAGE:$CI_BUILD_REF -t $CONTAINER_IMAGE:$CONTAINER_TAG .
     - docker push $CONTAINER_IMAGE:$CI_BUILD_REF
     - docker push $CONTAINER_IMAGE:CONTAINER_TAG
