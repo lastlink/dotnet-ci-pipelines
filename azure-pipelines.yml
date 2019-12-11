@@ -69,7 +69,7 @@ jobs:
         solutionOrProjectPath: 'MyProject.sln'
       continueOnError: true
 
-- job: ResharperCli
+- job: BuildQualityChecks
   steps:
     - task: NuGetToolInstaller@1
     - task: NuGetCommand@2
