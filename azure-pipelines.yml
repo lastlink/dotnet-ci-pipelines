@@ -104,6 +104,25 @@ jobs:
           powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
 
           resharper/inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
+    - task: ExtractFiles@1
+      continueOnError: true
+      inputs:
+        archiveFilePatterns: '$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip' 
+        destinationFolder: resharper
+        # cleanDestinationFolder: true 
+    - task: CmdLine@2
+      displayName: 'unzip tools'
+      continueOnError: true
+      inputs:
+        script: |
+          echo "powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper"
+          powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
+    - task: CmdLine@2
+      displayName: 'inspectcode'
+      continueOnError: true
+      inputs:
+        script: |
+          resharper/inspectcode.exe "MyProject.sln" --output=inspectcodeReport.html --format=Html
     - task: PublishBuildArtifacts@1
       continueOnError: true
       inputs:
@@ -147,4 +166,10 @@ jobs:
       continueOnError: false
       inputs:
         script: |
-          docker run  --env CODECLIMATE_DEBUG=1 --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.85.2 analyze -f html > CodeQuality/codeclimateReport.html
+          docker run  --env CODECLIMATE_DEBUG=1 --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.85.2 analyze -f html > codeclimateReport.html
+    - task: PublishBuildArtifacts@1
+      continueOnError: true
+      inputs:
+        PathtoPublish: 'codeclimateReport.html'
+        ArtifactName: 'inspectcodeReport'
+        publishLocation: 'Container'
