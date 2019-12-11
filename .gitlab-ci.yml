@@ -27,6 +27,7 @@ cache:
     - merge_requests
 
 stages:
+  - build
   - test
   - code_quality
   - deploy
@@ -50,6 +51,9 @@ debug:
    - ls # check cache
    - 'echo | dotnet --version' # must be v 2.2.300 or later for reporter tool to work
    - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
+  stage: build
+    - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+    - dotnet build
   stage: test
   script:
     - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
