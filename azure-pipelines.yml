@@ -6,6 +6,13 @@
 pr:
 - master
 
+trigger:
+  branches:
+    include:
+    - releases/*
+    exlcude:
+    - master
+
 pool:
   vmImage: 'windows-latest'
 
