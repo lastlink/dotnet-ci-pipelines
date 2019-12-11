@@ -1,0 +1,163 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+pr:
+- master
+
+trigger:
+  branches:
+    include:
+    - releases/*
+    exclude:
+    - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '*.sln'
+  builPdlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  DOCKER_DRIVER: overlay
+  CONTAINER_IMAGE: codeclimate/codeclimate
+  CONTAINER_TAG: '0.85.2'
+  RESHARPER_CLI_NAME: 'JetBrains.ReSharper.CommandLineTools.Unix'
+  RESHARPER_CLI_VERSION: "2019.2.3"
+  # set RESHARPER_CLI_VERSION=2019.2.3
+
+jobs:
+# doesn't work
+- job: SonarCloudQualityGate
+  steps:
+    - task: NuGetToolInstaller@1
+      enabled: false
+    - task: NuGetCommand@2
+      enabled: false
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: eshopworld.SonarCloudQualityGate.SonarCloudQualityGate.SonarCloudQualityGate@1
+      displayName: SonarCloudQualityGate
+      continueOnError: true
+      enabled: false
+
+# sometimes works but can't save output besides log
+- job: ResharperCli
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: alanwales.resharper-code-analysis.custom-build-task.ResharperCli@2
+      displayName: 'Automated code quality checks'
+      inputs:
+        solutionOrProjectPath: 'MyProject.sln'
+        additionalArguments: '/disable-settings-layers:SolutionPersonal --output=inspectcodeReport.html --format=Html'
+      continueOnError: true
+    # - task: CmdLine@2
+    #   displayName: 'dir contents'
+    #   continueOnError: true
+    #   inputs:
+    #     script: |
+    #       echo | dir
+    #       echo | dir d:\a\1\a\
+    #       echo | $(Build.ArtifactStagingDirectory)
+    # - task: PublishBuildArtifacts@1
+    #   inputs:
+    #     PathtoPublish: '$(Build.ArtifactStagingDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
+    #     ArtifactName: 'inspectcodeReport'
+    #     publishLocation: 'Container'
+    #   continueOnError: true
+
+# works great, also works on linux
+- job: ResharperCliInspectCode
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      continueOnError: true
+      inputs:
+        script: |
+          curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$(RESHARPER_CLI_VERSION)/$(RESHARPER_CLI_NAME).$(RESHARPER_CLI_VERSION).zip"
+
+          # curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.%RESHARPER_CLI_VERSION%/%RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip"
+          # powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
+          echo | dir
+    - task: ExtractFiles@1
+      continueOnError: true
+      inputs:
+        archiveFilePatterns: '$(RESHARPER_CLI_NAME).$(RESHARPER_CLI_VERSION).zip' 
+        destinationFolder: resharper
+        # cleanDestinationFolder: true 
+    # - task: CmdLine@2
+    #   displayName: 'unzip tools'
+    #   continueOnError: true
+    #   inputs:
+    #     script: |
+    #       echo "powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper"
+    #       powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
+    - task: CmdLine@2
+      displayName: 'inspectcode'
+      continueOnError: true
+      inputs:
+        script: |
+          mkdir -p code_quality
+          resharper\inspectcode.exe "MyProject.sln" --output=code_quality\inspectcodeReport.html --format=Html
+          resharper\dupfinder.exe "MyProject.sln" --output=code_quality\dupfinderReport.html --format=Html
+    - task: PublishBuildArtifacts@1
+      continueOnError: true
+      inputs:
+        PathtoPublish: 'code_quality'
+        ArtifactName: 'Code_Quality'
+        publishLocation: 'Container'
+
+# works not much output
+- job: BuildQualityChecks
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: mspremier.BuildQualityChecks.QualityChecks-task.BuildQualityChecks@6
+      displayName: 'Check build quality'
+      continueOnError: true
+
+# works only on linux
+- job: codeclimate
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  variables:
+      DOCKER_DRIVER: overlay
+      CONTAINER_IMAGE: codeclimate/codeclimate
+      CONTAINER_TAG: '0.85.2'
+  steps:  
+    - task: DockerInstaller@0
+      displayName: 'Install Docker 17.09.0-ce'
+      continueOnError: false
+    - task: CmdLine@2
+      displayName: 'Pull codeclimate docker image'
+      continueOnError: false
+      inputs:
+        script: |
+          docker pull codeclimate/codeclimate
+    - task: CmdLine@2
+      displayName: ' mkdir -p CodeQuality'
+      continueOnError: false
+      inputs:
+        script: |
+          mkdir -p CodeQuality
+    - task: CmdLine@2
+      displayName: 'run code codeclimate'
+      continueOnError: false
+      inputs:
+        script: |
+          docker run  --env CODECLIMATE_DEBUG=1 --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.85.2 analyze -f html > codeclimateReport.html
+    - task: PublishBuildArtifacts@1
+      continueOnError: true
+      inputs:
+        PathtoPublish: 'codeclimateReport.html'
+        ArtifactName: 'Code_Quality'
+        publishLocation: 'Container'
