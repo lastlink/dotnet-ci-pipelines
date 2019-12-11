@@ -94,7 +94,7 @@ jobs:
       continueOnError: true
       inputs:
         script: |
-          curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
+          curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$(RESHARPER_CLI_VERSION)/$(RESHARPER_CLI_NAME).$(RESHARPER_CLI_VERSION).zip"
 
           # curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.%RESHARPER_CLI_VERSION%/%RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip"
           # powershell Expand-Archive -Path %RESHARPER_CLI_NAME%.%RESHARPER_CLI_VERSION%.zip -DestinationPath resharper
@@ -141,6 +141,8 @@ jobs:
       continueOnError: true
 
 - job: codeclimate
+  pool:
+    vmImage: 'Ubuntu-16.04'
   variables:
       DOCKER_DRIVER: overlay
       CONTAINER_IMAGE: codeclimate/codeclimate
