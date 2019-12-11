@@ -69,23 +69,6 @@ debug:
         - '*.Test/TestResults/TestResults.xml'
 
 # takes upwards of 10 minutes, make manual, working on cache
-codeclimate_build:
-  when: manual
-  image: docker:latest
-  variables:
-    DOCKER_DRIVER: overlay
-    CONTAINER_IMAGE: codeclimate/codeclimate
-    CONTAINER_TAG: '0.85.2'
-  services:
-    - docker:dind
-  stage: test
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $CONTAINER_IMAGE
-    - docker build --cache-from $CONTAINER_IMAGE:$CONTAINER_TAG -t $CONTAINER_IMAGE:$CI_BUILD_REF -t $CONTAINER_IMAGE:$CONTAINER_TAG .
-    - docker push $CONTAINER_IMAGE:$CI_BUILD_REF
-    - docker push $CONTAINER_IMAGE:CONTAINER_TAG
-
 codeclimate:
   image: docker:latest
   variables:
@@ -94,11 +77,10 @@ codeclimate:
     CONTAINER_TAG: '0.85.2'
   services:
     - docker:dind
-  stage: code_quality
+  stage: test
   needs: ["codeclimate_build"]
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $CONTAINER_IMAGE:$CI_BUILD_REF
+    - docker pull $CONTAINER_IMAGE
     - docker run 
        --env CODECLIMATE_DEBUG=1 
        --env CODECLIMATE_CODE="$PWD" 
@@ -106,8 +88,13 @@ codeclimate:
        --volume /var/run/docker.sock:/var/run/docker.sock 
        --volume /tmp/cc:/tmp/cc 
        $CONTAINER_IMAGE:$CI_BUILD_REF analyze -f html > CodeQuality/codeclimateReport.html
-    #- cat report.html
-
+    - docker run 
+       --env CODECLIMATE_DEBUG=1 
+       --env CODECLIMATE_CODE="$PWD" 
+       --volume "$PWD":/code 
+       --volume /var/run/docker.sock:/var/run/docker.sock 
+       --volume /tmp/cc:/tmp/cc 
+       $CONTAINER_IMAGE:$CI_BUILD_REF analyze -f json > CodeQuality/codeclimateReport.json
   artifacts:
     paths: [report.html]
   dependencies: []
@@ -121,7 +108,7 @@ resharper_inspect:
   cache:
    paths:
     - resharper
-  stage: code_quality
+  stage: test
   script:
     - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
     - >
@@ -144,7 +131,7 @@ resharper_dup:
   cache:
     paths:
       - resharper
-  stage: code_quality
+  stage: test
   script:
     - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
     - >
