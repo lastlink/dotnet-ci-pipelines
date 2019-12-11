@@ -83,6 +83,7 @@ jobs:
         PathtoPublish: '$(Agent.TempDirectory)\JetBrains.ReSharper.CommandLineTools.2019.3.0\tools\Reports\CodeInspection_Unlabeled_Build.xml'
         ArtifactName: 'inspectcodeReport'
         publishLocation: 'Container'
+      continueOnError: true
 
 - job: ResharperCliInspectCode
   steps:
