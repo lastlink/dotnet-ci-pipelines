@@ -113,7 +113,7 @@ resharper_inspect:
   script:
     - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
     - >
-      if if [ ! -d "resharper" ]; then
+      if [ ! -d "resharper" ]; then
         apt update && apt install -y curl zip unzip
         curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
         unzip $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
@@ -134,7 +134,7 @@ resharper_dup:
   script:
     - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
     - >
-      if if [ ! -d "resharper" ]; then
+      if [ ! -d "resharper" ]; then
         apt update && apt install -y curl zip unzip
         curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
         unzip $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
