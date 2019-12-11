@@ -28,7 +28,6 @@ cache:
 
 stages:
   - test
-  - code_quality
   - deploy
 
 release:
@@ -77,8 +76,8 @@ codeclimate:
     CONTAINER_TAG: '0.85.2'
   services:
     - docker:dind
+  when: manual
   stage: test
-  needs: ["codeclimate_build"]
   script:
     - docker pull $CONTAINER_IMAGE
     - docker run 
