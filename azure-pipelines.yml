@@ -6,6 +6,13 @@
 pr:
 - master
 
+trigger:
+  branches:
+    include:
+    - releases/*
+    exclude:
+    - master
+
 pool:
   vmImage: 'windows-latest'
 
@@ -13,6 +20,12 @@ variables:
   solution: '*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  DOCKER_DRIVER: overlay
+  CONTAINER_IMAGE: codeclimate/codeclimate
+  CONTAINER_TAG: '0.85.2'
+  RESHARPER_CLI_NAME: 'JetBrains.ReSharper.CommandLineTools.Unix'
+  RESHARPER_CLI_VERSION: "2019.2.3"
+  # set RESHARPER_CLI_VERSION=2019.2.3
 
 jobs:
 - job: test
@@ -36,24 +49,3 @@ jobs:
       inputs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
-
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'CodeQuality'
-        publishLocation: 'Container'
-
-- job: codequality
-  steps:
-      - task: NuGetToolInstaller@1
-
-      - task: NuGetCommand@2
-        inputs:
-          restoreSolution: '$(solution)'
-        
-      - task: CmdLine@2
-        inputs:
-          script: |
-            echo Write your commands here
-            
-            echo Hello world
