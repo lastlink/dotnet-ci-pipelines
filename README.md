@@ -15,6 +15,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 ### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/workflows/.net%20core/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions)
 
 * [limits](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/about-github-actions) to 20 concurrent jobs support windows, ubuntu, mac
+    * doesn't currently support retry and max timeout although will cancel when limit reached.
 * [ ] Badges - workflow
 * [!] Tests - no display just logs and work flow
 * [ ] CodeClimate issues with non npm and docker in docker
