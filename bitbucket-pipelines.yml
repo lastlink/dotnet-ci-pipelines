@@ -21,9 +21,9 @@ pipelines:
             # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
             - mv MyProject.Test/TestResults MyProject.Test/test-results
             - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-            - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
-            - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
-            - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
+            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
+            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
             - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
       - step:
           trigger:
