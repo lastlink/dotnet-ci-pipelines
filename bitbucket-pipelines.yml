@@ -6,13 +6,72 @@
 image: mcr.microsoft.com/dotnet/core/sdk:2.2.301
 
 pipelines:
-  default:
-    - step:
-        caches:
-          - dotnetcore
-        script: # Modify the comma`nds below to build your repository.
-          - dotnet restore
-          - dotnet build
-          - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
-          # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
-          - mv MyProject.Test/TestResults MyProject.Test/test-results
+  pull-requests:
+    '**':
+      - step:
+          name: Build and test
+          caches:
+            - dotnetcore
+          script: # Modify the comma`nds below to build your repository.
+            - dotnet restore
+            - dotnet build
+            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+            # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
+            - mv MyProject.Test/TestResults MyProject.Test/test-results
+      - step:
+          name: Save Code Coverage
+          script:
+            - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
+            - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
+            - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
+            - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+            - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
+      - parallel: # these 2 steps will run in parallel
+          - step:
+              caches:
+                - docker # adds docker layer caching 
+              image: docker:latest
+              trigger: manual
+              name: Code Climate
+              memory: 2048
+              services:
+                - docker
+              script:
+                - docker pull $CONTAINER_IMAGE
+                - mkdir -p CodeQuality
+                - docker run 
+                  --env CODECLIMATE_DEBUG=1 
+                  --env CODECLIMATE_CODE="$PWD" 
+                  --volume "$PWD":/code 
+                  --volume /var/run/docker.sock:/var/run/docker.sock 
+                  --volume /tmp/cc:/tmp/cc 
+                  $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
+                - docker run 
+                  --env CODECLIMATE_DEBUG=1 
+                  --env CODECLIMATE_CODE="$PWD" 
+                  --volume "$PWD":/code 
+                  --volume /var/run/docker.sock:/var/run/docker.sock 
+                  --volume /tmp/cc:/tmp/cc 
+                  $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
+                - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
+          - step:
+              trigger: manual
+              name: Resharper cli
+              caches:
+                - 'resharper'
+              script:
+                - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+                - >
+                  if [ ! -d "resharper" ]; then
+                    apt update && apt install -y curl zip unzip
+                    curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
+                    unzip $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
+                  fi
+                - files=(*.sln)
+                - sh resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
+                - sh resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
+                - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
+
+definitions:
+  caches:
+    resharper: resharper
