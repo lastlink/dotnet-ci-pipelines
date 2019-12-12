@@ -74,10 +74,10 @@ pipelines:
                 unzip $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
               fi
             - ls
-            - ls ./resharper
+            - ls ./resharper/
             - files=(*.sln)
-            - sh resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
-            - sh resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
+            - sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
+            - sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
           artifacts:
             - CodeQuality/
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
