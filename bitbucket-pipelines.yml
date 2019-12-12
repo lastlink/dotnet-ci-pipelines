@@ -62,15 +62,14 @@ pipelines:
           script:
           - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
 
-
           - pipe: snyk/snyk-scan:0.2.0
-                    variables:
-                      SNYK_TOKEN: $SNYK_TOKEN
-                      LANGUAGE: "nuget"
-                      SEVERITY_THRESHOLD: "high"
-                      DONT_BREAK_BUILD: "true"
-                      MONITOR: "true"
-                      TARGET_FILE: "MyProject.sln"
+            variables:
+              SNYK_TOKEN: $SNYK_TOKEN
+              LANGUAGE: "nuget"
+              SEVERITY_THRESHOLD: "high"
+              DONT_BREAK_BUILD: "true"
+              MONITOR: "true"
+              TARGET_FILE: "MyProject.sln"
 
           - pipe: sonarsource/sonarcloud-scan:1.0.1
             variables:
