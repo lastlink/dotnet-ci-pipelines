@@ -2,6 +2,14 @@ name: .NET Core
 
 on: [push]
 
+env:
+  NUGET_PACKAGES_DIRECTORY: '.nupkg'
+  RESHARPER_CLI_NAME: 'JetBrains.ReSharper.CommandLineTools.Unix'
+  RESHARPER_CLI_VERSION: "2019.2.3"
+  DOCKER_DRIVER: overlay
+  CONTAINER_IMAGE: codeclimate/codeclimate
+  CONTAINER_TAG: '0.85.2'
+
 jobs:
   build:
 
@@ -9,16 +17,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    # - name: Setup .NET Core
-    #   uses: actions/setup-dotnet@v1
-    #   with:
-    #     dotnet-version: 2.2.108
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.301
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Tests
       run: dotnet test --collect:"XPlat Code Coverage"
     - name: Coverage Report
       run: |
+        dotnet --version
         dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
         ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
         ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
@@ -30,8 +39,9 @@ jobs:
           path: Reports
     - name: Resharper Code Quality
       run: |
-        apt update && apt install -y curl zip unzip
+        # apt update && apt install -y curl zip unzip
         curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
+        ls
         unzip -q $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
         mkdir -p CodeQuality
         files=(*.sln)
@@ -41,3 +51,41 @@ jobs:
       with:
           name: CodeQuality
           path: CodeQuality
+    - name: Code Climate Coverage Action
+      uses: paambaati/codeclimate-action@v2.3.0
+      with:
+        # Coverage command to execute
+        coverageCommand: # optional, default is yarn coverage
+        # Enable debugging logs for the Code Climate test reporter
+        debug: # optional, default is false
+    - uses: paambaati/codeclimate-action@v2.3.0
+        name: Code Climate Coverage Action
+          
+  codeclimate:
+    runs-on: ubuntu-latest
+    name: CodeClimate Quality Check
+    steps:
+    - run: |
+        docker pull $CONTAINER_IMAGE
+        mkdir -p CodeQuality
+        docker run 
+          --env CODECLIMATE_DEBUG=1 
+          --env CODECLIMATE_CODE="$PWD" 
+          --volume "$PWD":/code 
+          --volume /var/run/docker.sock:/var/run/docker.sock 
+          --volume /tmp/cc:/tmp/cc 
+          $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
+        docker run 
+          --env CODECLIMATE_DEBUG=1 
+          --env CODECLIMATE_CODE="$PWD" 
+          --volume "$PWD":/code 
+          --volume /var/run/docker.sock:/var/run/docker.sock 
+          --volume /tmp/cc:/tmp/cc 
+          $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
+      name: Run Docker
+  security:
+    runs-on: ubuntu-latest
+    name: Snyk Security Scan
+    steps:
+      - name: Snyk CLI Action
+        uses: clarkio/snyk-cli-action@1.0.0
