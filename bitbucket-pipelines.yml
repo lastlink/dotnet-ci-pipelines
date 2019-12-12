@@ -26,7 +26,7 @@ pipelines:
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
             - cat ./Reports/Summary.txt
           artifacts:
-            - Reports/
+            - Reports
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
       # - step:
       #     trigger:
@@ -72,17 +72,17 @@ pipelines:
                 apt update && apt install -y curl zip unzip
                 curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
                 ls
-                unzip $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
+                unzip -q $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
               fi
             - ls
-            - ls ./resharper/
+            # - ls ./resharper/
             - mkdir -p CodeQuality
             - files=(*.sln)
             - echo "${files[0]}"
             - sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
             - sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
           artifacts:
-            - CodeQuality/
+            - CodeQuality
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
 
 # definitions:
