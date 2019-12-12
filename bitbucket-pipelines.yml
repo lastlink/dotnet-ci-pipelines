@@ -47,7 +47,7 @@ pipelines:
             - CodeQuality/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
       - step:
-        script:
+          script:
           - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
 
           - pipe: snyk/snyk-scan:0.2.0
@@ -58,7 +58,7 @@ pipelines:
               SEVERITY_THRESHOLD: "high"
               DONT_BREAK_BUILD: "true"
               MONITOR: "true"
-          
+
           - pipe: sonarsource/sonarcloud-scan:1.0.1
             variables:
               EXTRA_ARGS: -Dsonar.projectDescription=\"Project with sonarcloud-scan pipe\" -Dsonar.eslint.reportPaths=\"report.json\"
