@@ -51,31 +51,7 @@ jobs:
       with:
           name: CodeQuality
           path: CodeQuality
-    - uses: paambaati/codeclimate-action@v2.3.0
-      name: Code Climate Coverage Action
-          
-  codeclimate:
-    runs-on: ubuntu-latest
-    name: CodeClimate Quality Check
-    steps:
-    - run: |
-        docker pull $CONTAINER_IMAGE
-        mkdir -p CodeQuality
-        docker run 
-          --env CODECLIMATE_DEBUG=1 
-          --env CODECLIMATE_CODE="$PWD" 
-          --volume "$PWD":/code 
-          --volume /var/run/docker.sock:/var/run/docker.sock 
-          --volume /tmp/cc:/tmp/cc 
-          $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
-        docker run 
-          --env CODECLIMATE_DEBUG=1 
-          --env CODECLIMATE_CODE="$PWD" 
-          --volume "$PWD":/code 
-          --volume /var/run/docker.sock:/var/run/docker.sock 
-          --volume /tmp/cc:/tmp/cc 
-          $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
-      name: Run Docker
+
   security:
     runs-on: ubuntu-latest
     name: Snyk Security Scan

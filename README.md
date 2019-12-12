@@ -15,8 +15,9 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 ### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines)
 * [ ] Badges
 * [!] Tests - no display just logs and work flow
-* [ ] CodeClimate
-* [ ] resharper cli
+* [ ] CodeClimate issues with non npm and docker in docker
+* [x] resharper cli - no manual triggers support
+* [x] artifacts 
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
 * [ ] Badges
@@ -26,7 +27,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [!] CodeClimate - docker in docker throwing an error
     * `docker: Error response from daemon: authorization denied by plugin pipelines: -v only supports $BITBUCKET_CLONE_DIR and its subdirectories.`
 * [x] resharper cli
-* artifacts only last 12 hrs are downloaded in the `.tar.gz` format
+* artifacts only last 12 hrs are downloaded in the `.tar.gz` format, could not figure out the curl method
 
 ### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master)
 * [ ] Badges?
@@ -34,6 +35,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] Tests - working display
 * [x] CodeClimate 3m
 * [x] resharper cli
+* [x] artifacts
 
 ### [ ] [Gitlab](https://gitlab.com/lastlink/dotnet-ci-pipelines) [![pipeline status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/pipeline.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master)  [![coverage status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/coverage.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master)
 * [ ] Badges
@@ -52,3 +54,4 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
         * [x] inspectcode 1min
         * [x] dupfinder 1min
     * [x] CodeClimate (complexity & duplication) 10min+ 
+* [x] artifacts
