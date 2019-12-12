@@ -25,11 +25,11 @@ pipelines:
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
             - cat ./Reports/Summary.txt
-            - pipe: atlassian/bitbucket-upload-file:0.1.2
-              variables:
-                BITBUCKET_USERNAME: $BITBUCKET_USERNAME
-                BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                FILENAME: 'Reports'
+            # - pipe: atlassian/bitbucket-upload-file:0.1.2
+            #   variables:
+            #     BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+            #     BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+            #     FILENAME: 'Reports'
           artifacts:
             - Reports/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
@@ -47,11 +47,11 @@ pipelines:
             - files=(*.sln)
             - sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
             - sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
-            - pipe: atlassian/bitbucket-upload-file:0.1.2
-              variables:
-                BITBUCKET_USERNAME: $BITBUCKET_USERNAME
-                BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                FILENAME: 'CodeQuality'
+            # - pipe: atlassian/bitbucket-upload-file:0.1.2
+            #   variables:
+            #     BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+            #     BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+            #     FILENAME: 'CodeQuality'
           artifacts:
             - CodeQuality/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
