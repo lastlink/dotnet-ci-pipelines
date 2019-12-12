@@ -24,6 +24,10 @@ pipelines:
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+            - cat ./Reports/Summary.txt
+          artifacts:
+            paths:
+              - Reports/
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
       - step:
           trigger:
@@ -35,7 +39,8 @@ pipelines:
           services:
             - docker
           script:
-            - docker pull $CONTAINER_IMAGE
+            - echo ${CONTAINER_IMAGE}
+            - docker pull ${CONTAINER_IMAGE}
             - mkdir -p CodeQuality
             - docker run 
               --env CODECLIMATE_DEBUG=1 
@@ -51,6 +56,9 @@ pipelines:
               --volume /var/run/docker.sock:/var/run/docker.sock 
               --volume /tmp/cc:/tmp/cc 
               $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
+          artifacts:
+            paths:
+              - CodeQuality/
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
       - step:
           name: Resharper cli
@@ -69,6 +77,9 @@ pipelines:
             - files=(*.sln)
             - sh resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
             - sh resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
+          artifacts:
+            paths:
+              - CodeQuality/
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
 
 definitions:
