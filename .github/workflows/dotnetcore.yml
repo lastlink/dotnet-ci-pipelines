@@ -24,6 +24,7 @@ jobs:
         ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
         ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
         cat ./Reports/Summary.txt
+    - uses: actions/upload-artifact@v1
       with:
           name: CodeCoverage
           path: Reports
@@ -36,6 +37,7 @@ jobs:
         files=(*.sln)
         sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
         sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
+    - uses: actions/upload-artifact@v1
       with:
           name: CodeQuality
           path: CodeQuality

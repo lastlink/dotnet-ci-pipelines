@@ -14,7 +14,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 
 ### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines)
 * [ ] Badges
-* [ ] Tests - working display
+* [!] Tests - no display just logs and work flow
 * [ ] CodeClimate
 * [ ] resharper cli
 
