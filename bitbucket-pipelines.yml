@@ -18,17 +18,14 @@ pipelines:
             - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
             # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
             - mv MyProject.Test/TestResults MyProject.Test/test-results
-      - step:
-          name: Save Code Coverage
-          script:
             - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
             - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
             - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
             - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
             - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
-  custom:
-    codeclimate: # these 2 steps will run in parallel
       - step:
+          trigger:
+            - manual
           caches:
             - docker # adds docker layer caching 
           image: docker:latest
@@ -53,7 +50,6 @@ pipelines:
               --volume /tmp/cc:/tmp/cc 
               $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
             - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
-    resharper_quality:
       - step:
           name: Resharper cli
           caches:
