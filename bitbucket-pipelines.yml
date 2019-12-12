@@ -28,42 +28,8 @@ pipelines:
           artifacts:
             - Reports/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
-      # - step:
-      #     trigger:
-      #       manual
-      #     caches:
-      #       - docker # adds docker layer caching 
-      #     image: docker:latest
-      #     name: Code Climate
-      #     services:
-      #       - docker
-      #     script:
-      #       - echo ${CONTAINER_IMAGE}
-      #       - docker pull ${CONTAINER_IMAGE}
-      #       - mkdir -p CodeQuality
-      #       - docker run 
-      #         --env CODECLIMATE_DEBUG=1 
-      #         --env CODECLIMATE_CODE="$PWD" 
-      #         --volume "$PWD":/code 
-      #         --volume /var/run/docker.sock:/var/run/docker.sock 
-      #         --volume /tmp/cc:/tmp/cc 
-      #         $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f html > CodeQuality/codeclimateReport.html
-      #       - docker run 
-      #         --env CODECLIMATE_DEBUG=1 
-      #         --env CODECLIMATE_CODE="$PWD" 
-      #         --volume "$PWD":/code 
-      #         --volume /var/run/docker.sock:/var/run/docker.sock 
-      #         --volume /tmp/cc:/tmp/cc 
-      #         $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
-      #     artifacts:
-      #       - CodeQuality/
-            # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
       - step:
           name: Resharper cli
-          # trigger:
-          #   manual
-          # caches:
-            # - 'resharper'
           script:
             - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
             - ls
@@ -85,6 +51,7 @@ pipelines:
             - CodeQuality/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
 
-# definitions:
-#   caches:
-#     resharper: resharper
+
+## to open artifacts download artifact.*.tar.gz from pipeline
+# run tar -zxvf artifacts download artifact.*.tar.gz
+# to unzip

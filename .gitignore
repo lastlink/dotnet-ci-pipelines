@@ -37,6 +37,7 @@ TestResult.xml
 test-results
 tools
 Reports*
+CodeQuality
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
