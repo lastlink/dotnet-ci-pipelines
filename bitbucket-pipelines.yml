@@ -47,6 +47,7 @@ pipelines:
             - CodeQuality/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
       - step:
+          name: bitbucket code quality
           script:
           - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
 
@@ -58,6 +59,7 @@ pipelines:
               SEVERITY_THRESHOLD: "high"
               DONT_BREAK_BUILD: "true"
               MONITOR: "true"
+              TARGET_FILE: "MyProject.sln"
 
           - pipe: sonarsource/sonarcloud-scan:1.0.1
             variables:
