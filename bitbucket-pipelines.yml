@@ -76,7 +76,9 @@ pipelines:
               fi
             - ls
             - ls ./resharper/
+            - mkdir -p CodeQuality
             - files=(*.sln)
+            - echo "${files[0]}"
             - sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
             - sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
           artifacts:
