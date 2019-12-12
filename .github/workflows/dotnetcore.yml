@@ -51,15 +51,8 @@ jobs:
       with:
           name: CodeQuality
           path: CodeQuality
-    - name: Code Climate Coverage Action
-      uses: paambaati/codeclimate-action@v2.3.0
-      with:
-        # Coverage command to execute
-        coverageCommand: # optional, default is yarn coverage
-        # Enable debugging logs for the Code Climate test reporter
-        debug: # optional, default is false
     - uses: paambaati/codeclimate-action@v2.3.0
-        name: Code Climate Coverage Action
+      name: Code Climate Coverage Action
           
   codeclimate:
     runs-on: ubuntu-latest
