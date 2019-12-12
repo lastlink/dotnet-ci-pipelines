@@ -32,7 +32,6 @@ pipelines:
           name: Resharper cli
           script:
             - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
-            - ls
             - >
               if [ ! -d "resharper" ]; then
                 apt update && apt install -y curl zip unzip
@@ -40,16 +39,32 @@ pipelines:
                 ls
                 unzip -q $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
               fi
-            - ls
-            # - ls ./resharper/
             - mkdir -p CodeQuality
             - files=(*.sln)
-            - echo "${files[0]}"
             - sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
             - sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
           artifacts:
             - CodeQuality/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
+      - step:
+        script:
+          - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+
+          - pipe: snyk/snyk-scan:0.2.0
+            variables:
+              SNYK_TOKEN: $SNYK_TOKEN
+              LANGUAGE: "npm"
+              PROTECT: "true"
+              SEVERITY_THRESHOLD: "high"
+              DONT_BREAK_BUILD: "true"
+              MONITOR: "true"
+          
+          - pipe: sonarsource/sonarcloud-scan:1.0.1
+            variables:
+              EXTRA_ARGS: -Dsonar.projectDescription=\"Project with sonarcloud-scan pipe\" -Dsonar.eslint.reportPaths=\"report.json\"
+              SONAR_SCANNER_OPTS: -Xmx512m
+              DEBUG: "true"
+          - ls
 
 
 ## to open artifacts download artifact.*.tar.gz from pipeline
