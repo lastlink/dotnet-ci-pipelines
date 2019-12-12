@@ -5,12 +5,81 @@
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: mcr.microsoft.com/dotnet/core/sdk:2.2.301
 
+# yml validator
+# https://bitbucket-pipelines.prod.public.atl-paas.net/validator
 pipelines:
-  default:
-    - step:
-        caches:
-          - dotnetcore
-        script: # Modify the comma`nds below to build your repository.
-          - dotnet restore
-          - dotnet build
-          - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+  pull-requests:
+    '**':
+      - step:
+          name: Build and test
+          caches:
+            - dotnetcore
+          script: # Modify the comma`nds below to build your repository.
+            - dotnet restore
+            - dotnet build
+            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+            # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
+            - mv MyProject.Test/TestResults MyProject.Test/test-results
+            - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
+            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
+            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
+            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+            - cat ./Reports/Summary.txt
+            # - pipe: atlassian/bitbucket-upload-file:0.1.2
+            #   variables:
+            #     BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+            #     BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+            #     FILENAME: 'Reports'
+          artifacts:
+            - Reports/**
+            # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
+      - step:
+          name: Resharper cli
+          script:
+            - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+            - >
+              if [ ! -d "resharper" ]; then
+                apt update && apt install -y curl zip unzip
+                curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
+                unzip -q $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
+              fi
+            - mkdir -p CodeQuality
+            - files=(*.sln)
+            - sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
+            - sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
+            # - pipe: atlassian/bitbucket-upload-file:0.1.2
+            #   variables:
+            #     BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+            #     BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+            #     FILENAME: 'CodeQuality'
+          artifacts:
+            - CodeQuality/**
+            # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
+  custom:
+    Code_Quality:  
+      - step:
+          name: bitbucket code quality
+          script:
+          - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+
+          - pipe: snyk/snyk-scan:0.2.0
+            variables:
+              SNYK_TOKEN: $SNYK_TOKEN
+              LANGUAGE: "nuget"
+              SEVERITY_THRESHOLD: "high"
+              DONT_BREAK_BUILD: "true"
+              MONITOR: "true"
+              TARGET_FILE: "MyProject.sln"
+
+          - pipe: sonarsource/sonarcloud-scan:1.0.1
+            variables:
+              EXTRA_ARGS: -Dsonar.projectDescription=\"Project with sonarcloud-scan pipe\" -Dsonar.eslint.reportPaths=\"report.json\"
+              SONAR_SCANNER_OPTS: -Xmx512m
+              DEBUG: "true"
+
+          - ls
+
+
+## to open artifacts download artifact.*.tar.gz from pipeline
+# run tar -zxvf artifacts download artifact.*.tar.gz
+# to unzip
