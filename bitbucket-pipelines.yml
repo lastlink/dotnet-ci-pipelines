@@ -14,3 +14,5 @@ pipelines:
           - dotnet restore
           - dotnet build
           - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+          # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
+          - mv MyProject.Test/TestResults MyProject.Test/test-results
