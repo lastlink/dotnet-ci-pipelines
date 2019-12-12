@@ -5,6 +5,8 @@
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: mcr.microsoft.com/dotnet/core/sdk:2.2.301
 
+# yml validator
+# https://bitbucket-pipelines.prod.public.atl-paas.net/validator
 pipelines:
   pull-requests:
     '**':
@@ -25,7 +27,7 @@ pipelines:
             - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
       - step:
           trigger:
-            - manual
+            manual
           caches:
             - docker # adds docker layer caching 
           image: docker:latest
@@ -52,6 +54,8 @@ pipelines:
             - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
       - step:
           name: Resharper cli
+          trigger:
+            manual
           caches:
             - 'resharper'
           script:
