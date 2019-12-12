@@ -55,6 +55,8 @@ pipelines:
           artifacts:
             - CodeQuality/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
+  custom:
+    Code_Quality:  
       - step:
           name: bitbucket code quality
           script:
@@ -74,8 +76,7 @@ pipelines:
               DONT_BREAK_BUILD: "true"
               MONITOR: "true"
               TARGET_FILE: "MyProject.sln"
-              DONT_BREAK_BUILD: "true"
-              
+
           - ls
 
 
