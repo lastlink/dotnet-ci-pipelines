@@ -71,6 +71,7 @@ pipelines:
               if [ ! -d "resharper" ]; then
                 apt update && apt install -y curl zip unzip
                 curl -LO "https://download.jetbrains.com/resharper/ReSharperUltimate.$RESHARPER_CLI_VERSION/$RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip"
+                ls
                 unzip $RESHARPER_CLI_NAME.$RESHARPER_CLI_VERSION.zip -d "resharper"
               fi
             - ls
