@@ -13,6 +13,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * Gitlab pipelines
 
 ### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines)
+* [limits](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/about-github-actions) to 20 concurrent jobs support windows, ubuntu, mac
 * [ ] Badges
 * [!] Tests - no display just logs and work flow
 * [ ] CodeClimate issues with non npm and docker in docker
@@ -20,6 +21,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] artifacts 
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
+* [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images
 * [ ] Badges
 * [x]  Tests - working display
     * [x] junit works fine
@@ -30,6 +32,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * artifacts only last 12 hrs are downloaded in the `.tar.gz` format, could not figure out the curl method
 
 ### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master)
+* [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects
 * [ ] Badges?
   * [x] build
 * [x] Tests - working display
@@ -38,6 +41,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] artifacts
 
 ### [ ] [Gitlab](https://gitlab.com/lastlink/dotnet-ci-pipelines) [![pipeline status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/pipeline.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master)  [![coverage status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/coverage.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master)
+* [limits](https://about.gitlab.com/pricing/) 2,000 minutes per month per group or user
 * [ ] Badges
     * [x] pipeline
     * [ ] coverage
