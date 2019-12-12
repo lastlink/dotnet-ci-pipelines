@@ -24,7 +24,7 @@ pipelines:
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
             - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
-            - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
+            # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
       - step:
           trigger:
             manual
@@ -51,7 +51,7 @@ pipelines:
               --volume /var/run/docker.sock:/var/run/docker.sock 
               --volume /tmp/cc:/tmp/cc 
               $CONTAINER_IMAGE:$CONTAINER_TAG analyze -f json > CodeQuality/codeclimateReport.json
-            - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
+            # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
       - step:
           name: Resharper cli
           trigger:
@@ -69,7 +69,7 @@ pipelines:
             - files=(*.sln)
             - sh resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
             - sh resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
-            - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
+            # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"CodeQuality"
 
 definitions:
   caches:
