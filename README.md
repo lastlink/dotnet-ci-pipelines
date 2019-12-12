@@ -20,6 +20,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [!] Tests - no display just logs and work flow
 * [ ] CodeClimate issues with non npm and docker in docker
 * [x] resharper cli - no manual triggers support
+* [x] security dependency scan - snyk
 * [x] artifacts 
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
