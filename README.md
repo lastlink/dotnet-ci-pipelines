@@ -17,6 +17,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [limits](https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions) 2,000 (per month) to 20 concurrent jobs support windows, ubuntu, mac
     * doesn't currently support retry and max timeout although will cancel when limit reached.
 * [ ] Badges - workflow
+* [x] api docs - docfx html only
 * [!] Tests - no display just logs and work flow
 * [ ] CodeClimate issues with non npm and docker in docker
 * [x] resharper cli - no manual triggers support
