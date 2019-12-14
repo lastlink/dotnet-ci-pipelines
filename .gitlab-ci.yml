@@ -42,6 +42,8 @@ release:
     - dotnet publish -c Release -o ../publish MyProject/MyProject.csproj
     
 debug:
+  only:
+    - merge_requests
   cache:
    paths:
     - resharper
@@ -145,6 +147,8 @@ resharper_inspect:
       
 # only takes 1 minute to run
 resharper_dup:
+  only:
+    - merge_requests
   cache:
     paths:
       - resharper
