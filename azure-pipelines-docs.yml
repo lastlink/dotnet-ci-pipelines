@@ -63,7 +63,7 @@ jobs:
           echo | dir
           echo | dir docfx_pdf
           set PATH=%PATH%;docfx_pdf\wkhtmltox\bin
-          .\docfx\docfx.exe pdf
+          .\docfx\docfx.exe .\docfx_pdf.json
     # may need to use environment variable to select path
     - task: PublishBuildArtifacts@1
       displayName: 'save html docs'

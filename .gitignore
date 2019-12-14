@@ -222,7 +222,7 @@ StyleCop.Cache
 
 publish/
 docs/
-docfx*
+docfx*/
 _site*
 *.exe
 *.7z
