@@ -38,11 +38,11 @@ jobs:
         archiveFilePatterns: 'docfx.zip' 
         destinationFolder: docfx
     - task: CmdLine@2
-      displayName: 'inspectcode'
+      displayName: 'generate docs'
       continueOnError: true
       inputs:
         script: |
-          ./docfx/docfx.exe
+          .\docfx\docfx.exe
     - task: PublishBuildArtifacts@1
       continueOnError: true
       inputs:
