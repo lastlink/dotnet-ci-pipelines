@@ -53,9 +53,17 @@ jobs:
       continueOnError: true
       inputs:
         script: |
-          .\7zip\7za.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-odocfx_pdf" -y
-          set PATH=%PATH%;docfx_pdf\wkhtmltox\bin
           .\docfx\docfx.exe
+          # may need to use environment variable to select path
+    - task: CmdLine@2
+      displayName: 'generate docs as pdf'
+      continueOnError: true
+      inputs:
+        script: |
+          .\7zip\7za.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-odocfx_pdf" -y
+          echo | dir
+          echo | dir docfx_pdf
+          set PATH=%PATH%;docfx_pdf\wkhtmltox\bin
           # may need to use environment variable to select path
           .\docfx\docfx.exe pdf
     - task: PublishBuildArtifacts@1
