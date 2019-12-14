@@ -35,7 +35,7 @@ jobs:
           curl -LO "https://www.7-zip.org/a/7za920.zip"
           curl -LO "https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.mxe-cross-win64.7z"
           echo | dir
-          # 7za920.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-o wkhtmltox" -y
+    # 7za920.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-o wkhtmltox" -y
     - task: ExtractFiles@1
       displayName: 'install docfx cli'
       continueOnError: true
@@ -54,7 +54,6 @@ jobs:
       inputs:
         script: |
           .\docfx\docfx.exe
-          # may need to use environment variable to select path
     - task: CmdLine@2
       displayName: 'generate docs as pdf'
       continueOnError: true
@@ -64,8 +63,8 @@ jobs:
           echo | dir
           echo | dir docfx_pdf
           set PATH=%PATH%;docfx_pdf\wkhtmltox\bin
-          # may need to use environment variable to select path
           .\docfx\docfx.exe pdf
+    # may need to use environment variable to select path
     - task: PublishBuildArtifacts@1
       displayName: 'save html docs'
       continueOnError: true
