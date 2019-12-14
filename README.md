@@ -38,7 +38,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects
 * [ ] Badges?
   * [x] build
-* [ ] api docs
+* [x] api docs - docfx
 * [x] Tests - working display
 * [x] CodeClimate 3m
 * [x] resharper cli

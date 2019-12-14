@@ -27,25 +27,48 @@ jobs:
       inputs:
         restoreSolution: '$(solution)'
     - task: CmdLine@2
+      displayName: 'download dependencies'
       continueOnError: true
       inputs:
         script: |
           curl -LO "https://github.com/dotnet/docfx/releases/download/v2.48/docfx.zip"
+          curl -LO "https://www.7-zip.org/a/7za920.zip"
+          curl -LO "https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox-0.12.5-1.mxe-cross-win64.7z"
           echo | dir
+          # 7za920.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-o wkhtmltox" -y
     - task: ExtractFiles@1
+      displayName: 'install docfx cli'
       continueOnError: true
       inputs:
         archiveFilePatterns: 'docfx.zip' 
         destinationFolder: docfx
+    - task: ExtractFiles@1
+      displayName: 'install 7zip cli'
+      continueOnError: true
+      inputs:
+        archiveFilePatterns: '7za920.zip' 
+        destinationFolder: 7zip
     - task: CmdLine@2
       displayName: 'generate docs'
       continueOnError: true
       inputs:
         script: |
+          .\7zip\7za.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-odocfx_pdf" -y
+          set PATH=%PATH%;docfx_pdf\wkhtmltox\bin
           .\docfx\docfx.exe
+          # may need to use environment variable to select path
+          .\docfx\docfx.exe pdf
     - task: PublishBuildArtifacts@1
+      displayName: 'save html docs'
       continueOnError: true
       inputs:
         PathtoPublish: '_site'
+        ArtifactName: 'code_docs'
+        publishLocation: 'Container'
+    - task: PublishBuildArtifacts@1
+      displayName: 'save pdf docs'
+      continueOnError: true
+      inputs:
+        PathtoPublish: '_site_pdf'
         ArtifactName: 'code_docs'
         publishLocation: 'Container'
