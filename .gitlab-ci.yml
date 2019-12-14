@@ -73,6 +73,8 @@ debug:
 
 # takes upwards of 10 minutes, make manual, working on cache
 codeclimate:
+  only:
+    - merge_requests
   image: docker:latest
   variables:
     DOCKER_DRIVER: overlay
@@ -108,6 +110,8 @@ codeclimate:
       - $CODE_QUALITY_DISABLED
 
 code_docs:
+  only:
+    - merge_requests
   stage: test
   image: mono:latest
   when: manual
@@ -123,6 +127,8 @@ code_docs:
 
 # should take less than 10 minutes if taking longer just cancel rerun, should use DotSettings file to exclude lib files
 resharper_inspect:
+  only:
+    - merge_requests
   when: manual
   cache:
    paths:
