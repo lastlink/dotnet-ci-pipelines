@@ -42,6 +42,8 @@ release:
     - dotnet publish -c Release -o ../publish MyProject/MyProject.csproj
     
 debug:
+  only:
+    - merge_requests
   cache:
    paths:
     - resharper
@@ -71,6 +73,8 @@ debug:
 
 # takes upwards of 10 minutes, make manual, working on cache
 codeclimate:
+  only:
+    - merge_requests
   image: docker:latest
   variables:
     DOCKER_DRIVER: overlay
@@ -105,8 +109,26 @@ codeclimate:
     variables:
       - $CODE_QUALITY_DISABLED
 
+code_docs:
+  only:
+    - merge_requests
+  stage: test
+  image: mono:latest
+  when: manual
+  script:
+    - apt update && apt install -y curl zip unzip
+    - curl -LO "https://github.com/dotnet/docfx/releases/download/v2.48/docfx.zip"
+    - unzip -q docfx.zip -d "docfx"
+    - mono ./docfx/docfx.exe
+    # - powershell.exe -NoP -NonI -Command "Expand-Archive '.\docfx.zip' '.\docfx\'" 
+  artifacts:
+    paths:
+      - _site/
+
 # should take less than 10 minutes if taking longer just cancel rerun, should use DotSettings file to exclude lib files
 resharper_inspect:
+  only:
+    - merge_requests
   when: manual
   cache:
    paths:
@@ -131,6 +153,8 @@ resharper_inspect:
       
 # only takes 1 minute to run
 resharper_dup:
+  only:
+    - merge_requests
   cache:
     paths:
       - resharper

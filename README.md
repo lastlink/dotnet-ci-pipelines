@@ -54,6 +54,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
             * [] badge_combined [![badge_branchcoverage](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_combined.svg)](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_combined.svg)
             * [] badge_linecoverage [![badge_branchcoverage](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_linecoverage.svg)](https://lastlink.gitlab.io/dotnet-ci-pipelines/badge_linecoverage.svg)
     * [ ] build per job?
+* [x] api docs - docfx
 * [x] Tests - Junit
 * [x] Coverage - coverlet
 * [x] Code Quality

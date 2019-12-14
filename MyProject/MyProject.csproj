@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
