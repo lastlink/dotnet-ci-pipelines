@@ -222,5 +222,9 @@ StyleCop.Cache
 
 publish/
 docs/
-docfx/
-_site
+docfx*/
+_site*
+*.exe
+*.7z
+7zip
+wkhtmltox
