@@ -46,6 +46,6 @@ jobs:
     - task: PublishBuildArtifacts@1
       continueOnError: true
       inputs:
-        PathtoPublish: 'code_docs'
+        PathtoPublish: 'docs'
         ArtifactName: 'code_docs'
         publishLocation: 'Container'
