@@ -54,16 +54,16 @@ jobs:
       inputs:
         script: |
           .\docfx\docfx.exe
-    - task: CmdLine@2
-      displayName: 'generate docs as pdf'
-      continueOnError: true
-      inputs:
-        script: |
-          .\7zip\7za.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-odocfx_pdf" -y
-          echo | dir
-          echo | dir docfx_pdf
-          set PATH=%PATH%;docfx_pdf\wkhtmltox\bin
-          .\docfx\docfx.exe .\docfx_pdf.json
+    # - task: CmdLine@2
+    #   displayName: 'generate docs as pdf'
+    #   continueOnError: true
+    #   inputs:
+    #     script: |
+    #       .\7zip\7za.exe x wkhtmltox-0.12.5-1.mxe-cross-win64.7z "-odocfx_pdf" -y
+    #       echo | dir
+    #       echo | dir docfx_pdf
+    #       set PATH=%PATH%;docfx_pdf\wkhtmltox\bin
+    #       .\docfx\docfx.exe .\docfx_pdf.json
     # may need to use environment variable to select path
     - task: PublishBuildArtifacts@1
       displayName: 'save html docs'
@@ -72,10 +72,10 @@ jobs:
         PathtoPublish: '_site'
         ArtifactName: 'code_docs'
         publishLocation: 'Container'
-    - task: PublishBuildArtifacts@1
-      displayName: 'save pdf docs'
-      continueOnError: true
-      inputs:
-        PathtoPublish: '_site_pdf'
-        ArtifactName: 'code_docs'
-        publishLocation: 'Container'
+    # - task: PublishBuildArtifacts@1
+    #   displayName: 'save pdf docs'
+    #   continueOnError: true
+    #   inputs:
+    #     PathtoPublish: '_site_pdf'
+    #     ArtifactName: 'code_docs'
+    #     publishLocation: 'Container'
