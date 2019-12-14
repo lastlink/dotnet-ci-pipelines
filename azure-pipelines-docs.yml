@@ -1,0 +1,51 @@
+pr:
+- master
+
+name: code documentation
+
+trigger:
+  branches:
+    include:
+    - releases/*
+    exclude:
+    - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '*.sln'
+  builPdlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  DOCKER_DRIVER: overlay
+
+jobs:
+- job: docfx
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      continueOnError: true
+      inputs:
+        script: |
+          curl -LO "https://github.com/dotnet/docfx/releases/download/v2.48/docfx.zip"
+          echo | dir
+    - task: ExtractFiles@1
+      continueOnError: true
+      inputs:
+        archiveFilePatterns: 'docfx.zip' 
+        destinationFolder: docfx
+    - task: CmdLine@2
+      displayName: 'inspectcode'
+      continueOnError: true
+      inputs:
+        script: |
+          ./docfx/docfx.exe
+    - task: PublishBuildArtifacts@1
+      continueOnError: true
+      inputs:
+        PathtoPublish: 'code_docs'
+        ArtifactName: 'code_docs'
+        publishLocation: 'Container'
