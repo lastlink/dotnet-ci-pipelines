@@ -221,3 +221,6 @@ ModelManifest.xml
 StyleCop.Cache
 
 publish/
+docs/
+docfx/
+_site
