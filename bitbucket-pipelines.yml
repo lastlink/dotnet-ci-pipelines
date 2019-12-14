@@ -78,6 +78,17 @@ pipelines:
               DEBUG: "true"
 
           - ls
+    Code_Docs:
+      - step:
+          name: docfx
+          image: mono:latest
+          script:
+            - apt update && apt install -y curl zip unzip
+            - curl -LO "https://github.com/dotnet/docfx/releases/download/v2.48/docfx.zip"
+            - unzip -q docfx.zip -d "docfx"
+            - mono ./docfx/docfx.exe
+          artifacts:
+              - _site/**
 
 
 ## to open artifacts download artifact.*.tar.gz from pipeline

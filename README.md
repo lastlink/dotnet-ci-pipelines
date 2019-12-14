@@ -27,6 +27,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
 * [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images
 * [ ] Badges
+* [x] api docs - docfx html only
 * [x]  Tests - working display
     * [x] junit works fine
     * [x] print out code coverage in log, not natively supported
