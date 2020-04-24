@@ -58,6 +58,10 @@ namespace MyProject
 
             int number;
 
+            bool changed = getChange();
+
+            Console.WriteLine(changed.ToString());
+
             bool success = Int32.TryParse(name, out number);
 
             if (success)
@@ -66,6 +70,11 @@ namespace MyProject
                 Console.WriteLine(numResult);
                 Console.WriteLine(Duplication.multiplyByTwo(numResult));
             }
+        }
+
+        private static bool getChange()
+        {
+            return true;
         }
 
         #endregion
