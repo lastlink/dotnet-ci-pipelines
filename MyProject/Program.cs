@@ -60,6 +60,8 @@ namespace MyProject
 
             bool changed = getChange();
 
+            changed = !getChange();
+
             Console.WriteLine(changed.ToString());
 
             bool success = Int32.TryParse(name, out number);

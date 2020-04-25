@@ -127,6 +127,7 @@ sonarcloud_check:
     - 'dotnet restore'
   script:
     # https://github.com/SonarSource/sonar-scanner-msbuild/blob/master/sonar-docs/analysis/scan/sonarscanner-for-msbuild.md
+    - git fetch origin
     - ./tools/dotnet-sonarscanner begin /k:"lastlink_dotnet-ci-pipelines" /o:"lastlink" /d:sonar.login="${SONAR_TOKEN}" /d:sonar.host.url="${SONAR_HOST_URL}"  /d:sonar.cs.opencover.reportsPaths="*.Test/TestResults/coverage.opencover.xml"
     - dotnet build
     - ./tools/dotnet-sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
