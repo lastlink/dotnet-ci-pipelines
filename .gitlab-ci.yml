@@ -91,7 +91,7 @@ debug:
   script:
     - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
     # each reporttype must be a separate line, doesn't work together ; separated
-    - ls -ld ${CI_PROJECT_DIR}/TestResults/*
+    - ls -ld ${CI_PROJECT_DIR}/**/TestResults/*
     - mkdir -p public
     - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:Reports_Coverage" -reportTypes:TextSummary;
     - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:Reports_Coverage" -reportTypes:Html;
