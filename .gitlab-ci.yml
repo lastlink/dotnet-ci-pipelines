@@ -31,6 +31,124 @@ stages:
   - deploy
   - quality
 
+unit_test_db_mssql:
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    ACCEPT_EULA: Y
+    SA_PASSWORD: yourStrong(!)Password
+  stage: test
+  services:
+    - name: mcr.microsoft.com/mssql/server:2019-latest
+      alias: localhost_mssql
+  rules:
+    - if: '$DATABASE_DISABLED || $DATABASE_MSSQL_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: manual
+      allow_failure: true
+  # rules:
+    # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
+  before_script:
+    - 'ls'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/appsettings-Dev.json ${CI_PROJECT_DIR}/MyProject.Api/appsettings.json'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings-dev.json ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings.json'
+    - 'echo | dotnet --version'
+    - 'dotnet restore'
+  script:
+    - cd MyProject.Repository.Test
+    - cp ./Data/appSettings.gitlab.mssql.json ./Data/AppSettings.json
+    - dotnet test --logger "junit"
+    - cd ..
+    - ls -ld *.Test/TestResults/*
+  artifacts:
+    paths:
+      - '*.Test/TestResults/TestResults.xml'
+    reports:
+        junit:
+          - '*.Test/TestResults/TestResults.xml'
+
+unit_test_db_mysql:
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    MYSQL_DATABASE: "mockDb"
+    MYSQL_ROOT_PASSWORD: "mysecretpw"
+  stage: test
+  rules:
+    - if: '$DATABASE_DISABLED || $DATABASE_MYSQL_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+  services:
+    - name: mysql:5.7.29
+      alias: localhost_mysql
+  # rules:
+    # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
+  before_script:
+    - 'ls'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/appsettings-Dev.json ${CI_PROJECT_DIR}/MyProject.Api/appsettings.json'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings-dev.json ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings.json'
+    - 'echo | dotnet --version'
+    - 'dotnet restore'
+  script:
+    - cd MyProject.Repository.Test
+    - cp ./Data/appSettings.gitlab.mysql.json ./Data/AppSettings.json
+    - dotnet test --logger "junit"
+    - cd ..
+    - ls -ld *.Test/TestResults/*
+  artifacts:
+    paths:
+      - '*.Test/TestResults/TestResults.xml'
+    reports:
+        junit:
+          - '*.Test/TestResults/TestResults.xml'
+
+unit_test_db_postgres:
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    POSTGRES_DB: mockDb
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: "mysecretpassword"
+    POSTGRES_HOST_AUTH_METHOD: trust
+  stage: test
+  rules:
+    - if: '$DATABASE_DISABLED || $DATABASE_POSTGRES_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+  services:
+    - name: postgres:12.2-alpine
+      alias: localhost_postgres
+  # rules:
+    # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
+  before_script:
+    - 'ls'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/appsettings-Dev.json ${CI_PROJECT_DIR}/MyProject.Api/appsettings.json'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings-dev.json ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings.json'
+    - 'echo | dotnet --version'
+    - 'dotnet restore'
+  script:
+    - cd MyProject.Repository.Test
+    - cp ./Data/appSettings.gitlab.postgres.json ./Data/AppSettings.json
+    - dotnet test --logger "junit"
+    - cd ..
+    - ls -ld *.Test/TestResults/*
+  artifacts:
+    paths:
+      - '*.Test/TestResults/TestResults.xml'
+    reports:
+        junit:
+          - '*.Test/TestResults/TestResults.xml'
+
+
 release:
   stage: deploy
   only:
@@ -72,10 +190,10 @@ sonarcloud_check_master:
   artifacts:
     paths:
       - Reports_Coverage/
-      - '*.Tests/TestResults/TestResults.xml'
+      - '*.Test/TestResults/TestResults.xml'
     reports:
         junit:
-          - '*.Tests/TestResults/TestResults.xml'
+          - '*.Test/TestResults/TestResults.xml'
     
 debug:
   only:
