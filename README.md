@@ -1,5 +1,5 @@
 # DOTNET CORE CI PIPELINE EXAMPLE: 
-Goal to have dotnet core c# example pipelines for major git source control dev ops including github, azure devops, gitlab, bitbucket, and etc. Should auto run only on a new pull request, show test results in native ui per website, code coverage, and some additional manual steps running code quality analysis. Badge support native is also nice or from https://shields.io/category/build.
+Goal to have dotnet core c# example pipelines for major git source control dev ops including github, azure devops, gitlab, bitbucket, and etc. Should auto run only on a new pull request, show test results in native ui per website, code coverage, and some additional manual steps running code quality analysis. Badge support native is also nice or from https://shields.io/category/build. Also will try service containers and database unit tests
 Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/gitlab-ci-example-dotnetcore).  
 
 ## Contribution
@@ -11,6 +11,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * Bitbucket
 * Azure DevOps
 * Gitlab pipelines
+* Other notes
 
 ### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/workflows/.net%20core/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions)
 
@@ -66,3 +67,10 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
         * [x] dupfinder 1min
     * [x] CodeClimate (complexity & duplication) 10min+ 
 * [x] artifacts
+
+## Other
+
+### Database
+* `dotnet ef migrations add InitialMigrations --project ../MyProject.Repository/MyProject.Repository.csproj --startup-project ./MyProject.Api.csproj`
+* `dotnet ef migrations remove`
+* `dotnet ef database update --project ../MyProject.Repository/MyProject.Repository.csproj --startup-project ./MyProject.Api.csproj`
