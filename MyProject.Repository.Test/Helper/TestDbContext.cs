@@ -82,8 +82,18 @@ namespace MyProject.Repository.Test.Helper
         /// </summary>
         private void SeedDb()
         {
-            // var transJournal = new TransactionJournals
-            var blogs = DataLoader.loadJsonArray<Blog>("../../MyProject.Repository.Test/Data/Repository/");
+            var blogC = 5;
+            var blogs = new List<Blog>();
+            for (int i = 1; i <= blogC; i++)
+            {
+                var b = new Blog()
+                {
+                    Title = "test blog" + i,
+                    Content = "some content" + i
+                };
+                blogs.Add(b);
+            }
+            // var blogs = DataLoader.loadJsonArray<Blog>("../../MyProject.Repository.Test/Data/Repository/");
             cleanupBlogs(blogs);
             try
             {

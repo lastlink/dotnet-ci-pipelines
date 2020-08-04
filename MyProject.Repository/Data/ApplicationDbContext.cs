@@ -22,10 +22,15 @@ namespace MyProject.Repository.Data
             }
         }
 
-         protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+
+            modelBuilder.Entity<Blog>(entity =>
+            {
+
+            });
 
         }
     }

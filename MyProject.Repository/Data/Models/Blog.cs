@@ -2,7 +2,7 @@ using System;
 
 namespace MyProject.Repository.Data.Models
 {
-    public class Blog
+    public partial class Blog
     {
         public int Id { get; set; }
         public DateTime? CreatedAt { get; set; }
