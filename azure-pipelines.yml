@@ -27,6 +27,23 @@ variables:
   RESHARPER_CLI_VERSION: "2019.2.3"
   # set RESHARPER_CLI_VERSION=2019.2.3
 
+resources:
+  containers:
+  - container: mysql
+    image: mysql:5.7.29
+    ports: 3306:3306
+    options: -e MYSQL_ROOT_PASSWORD=mysecretpw
+
+  - container: pg11
+    image: postgres:11
+    ports: 5432:5432
+    options: -e POSTGRES_PASSWORD=mysecretpassword
+
+  - container: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports: 1433:1433
+    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password'
+
 jobs:
 - job: test
   steps:
@@ -49,6 +66,87 @@ jobs:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
+        arguments: '--collect:"XPlat Code Coverage"'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
+- job: test-mssql
+  pool:
+    vmImage: 'ubuntu-latest'
+  services:
+    localhost_mssql: sqlserver
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      displayName: 'enabledb'
+      continueOnError: true
+      inputs:
+        script: |
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        workingDirectory: MyProject.Repository.Test
+        arguments: '--collect:"XPlat Code Coverage"'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
+- job: test-postgres
+  pool:
+    vmImage: 'ubuntu-latest'
+  services:
+    localhost_postgres: pg11
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      displayName: 'enabledb'
+      continueOnError: true
+      inputs:
+        script: |
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        workingDirectory: MyProject.Repository.Test
+        arguments: '--collect:"XPlat Code Coverage"'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
+- job: test-mysql
+  pool:
+    vmImage: 'ubuntu-latest'
+  services:
+    localhost_mysql: mysql
+  steps:
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      displayName: 'enabledb'
+      continueOnError: true
+      inputs:
+        script: |
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        workingDirectory: MyProject.Repository.Test
         arguments: '--collect:"XPlat Code Coverage"'
 
     - task: PublishCodeCoverageResults@1
