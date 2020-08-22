@@ -4,7 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 pr:
-- master
+  autoCancel: true
+  branches:
+    include:
+      - master
 
 trigger:
   branches:
@@ -77,6 +80,7 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
 - job: unit_test_db_mssql
+  # continueOnError: true
   pool:
     vmImage: 'ubuntu-latest'
   services:
