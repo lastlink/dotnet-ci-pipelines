@@ -47,7 +47,6 @@ unit_test_db_mssql:
       when: manual
       allow_failure: true
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
-      when: manual
       allow_failure: true
   # rules:
     # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
