@@ -43,38 +43,38 @@ pipelines:
           artifacts:
             - Reports/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
-        - step:
-          name: unit_test_db_mssql
-          script:
-            # - ignore failure
-            - set +e
-            - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
-            - cd MyProject.Repository.Test
-            - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
-            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
-            # Enable exit on non 0
-            - set -e
-          services: 
-            - mssql 
-        - step:
-          name: unit_test_db_mysql
-          script:
-            - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
-            - cd MyProject.Repository.Test
-            - cp ./Data/appSettings.devops.mysql.json ./Data/AppSettings.json
-            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
-          services: 
-            - mysql 
-        - step:
-          name: unit_test_db_postgres
-          script:
-            - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
-            - cd MyProject.Repository.Test
-            - cp ./Data/appSettings.devops.postgres.json ./Data/AppSettings.json
-            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
-          services: 
-            - pg11
-        - step:
+      - step:
+              name: unit_test_db_mysql
+              script:
+                - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+                - cd MyProject.Repository.Test
+                - cp ./Data/appSettings.devops.mysql.json ./Data/AppSettings.json
+                - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+              services: 
+                - mysql
+      - step:
+              name: unit_test_db_mssql
+              script:
+                # - ignore failure
+                - set +e
+                - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+                - cd MyProject.Repository.Test
+                - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
+                - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+                # Enable exit on non 0
+                - set -e
+              services: 
+                - mssql
+      - step:
+              name: unit_test_db_postgres
+              script:
+                - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+                - cd MyProject.Repository.Test
+                - cp ./Data/appSettings.devops.postgres.json ./Data/AppSettings.json
+                - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+              services: 
+                - pg11
+      - step:
           name: Resharper cli
           script:
             # ignore failure
