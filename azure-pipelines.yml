@@ -4,7 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 pr:
-- master
+  autoCancel: true
+  branches:
+    include:
+      - master
 
 trigger:
   branches:
@@ -27,22 +30,154 @@ variables:
   RESHARPER_CLI_VERSION: "2019.2.3"
   # set RESHARPER_CLI_VERSION=2019.2.3
 
+resources:
+  containers:
+  - container: mysql
+    image: mysql:5.7.29
+    ports: 
+      - 3306:3306
+    options: -e MYSQL_ROOT_PASSWORD=mysecretpw
+
+  - container: pg11
+    image: postgres:11
+    ports: 
+      - 5432:5432
+    options: -e POSTGRES_PASSWORD=mysecretpassword
+
+  - container: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports: 
+      - 1433:1433
+    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password'
+
 jobs:
 - job: test
   steps:
-    - task: NuGetToolInstaller@1
-    - task: NuGetCommand@2
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
       inputs:
-        restoreSolution: '$(solution)'
-    - task: VSBuild@1
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
+    # - task: VSBuild@1
+    #   inputs:
+    #     solution: '$(solution)'
+    #     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    #     platform: '$(buildPlatform)'
+    #     configuration: '$(buildConfiguration)'
+    - task: CmdLine@2
+      displayName: 'enablesqlite'
+      continueOnError: true
       inputs:
-        solution: '$(solution)'
-        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-        platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'
+        script: |
+          copy MyProject.Repository.Test\Data\appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
+        arguments: '--collect:"XPlat Code Coverage"'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
+- job: unit_test_db_mssql
+  # continueOnError: true
+  pool:
+    vmImage: 'ubuntu-latest'
+  services:
+    localhost_mssql: sqlserver
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
+      inputs:
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      displayName: 'enabledb'
+      continueOnError: true
+      inputs:
+        script: |
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        workingDirectory: MyProject.Repository.Test
+        arguments: '--collect:"XPlat Code Coverage"'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
+- job: unit_test_db_postgres
+  pool:
+    vmImage: 'ubuntu-latest'
+  services:
+    localhost_postgres: pg11
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
+      inputs:
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      displayName: 'enabledb'
+      continueOnError: true
+      inputs:
+        script: |
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        workingDirectory: MyProject.Repository.Test
+        arguments: '--collect:"XPlat Code Coverage"'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
+
+- job: unit_test_db_mysql
+  pool:
+    vmImage: 'ubuntu-latest'
+  services:
+    localhost_mysql: mysql
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
+      inputs:
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
+    - task: CmdLine@2
+      displayName: 'enabledb'
+      continueOnError: true
+      inputs:
+        script: |
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        workingDirectory: MyProject.Repository.Test
         arguments: '--collect:"XPlat Code Coverage"'
 
     - task: PublishCodeCoverageResults@1

@@ -170,8 +170,8 @@ sonarcloud_check_master:
   before_script:
     - apt-get update && apt-get install -qq -y openjdk-8-jre > /dev/null
     - java -version
-    - dotnet tool install dotnet-sonarscanner --tool-path tools
-    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.8.0/dotnet-sonarscanner/4.8.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
+    - dotnet tool install dotnet-sonarscanner --tool-path tools --version 4.10.0
+    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.10.0/dotnet-sonarscanner/4.10.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
     - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
     - 'ls tools'
     - 'dotnet restore'
@@ -207,6 +207,8 @@ debug:
    - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
   stage: test
   script:
+    # run sqlite test
+    - cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
     - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
     # each reporttype must be a separate line, doesn't work together ; separated
     - ls -ld ${CI_PROJECT_DIR}/**/TestResults/*
@@ -239,8 +241,8 @@ sonarcloud_check:
   before_script:
     - apt-get update && apt-get install -qq -y openjdk-8-jre > /dev/null
     - java -version
-    - dotnet tool install dotnet-sonarscanner --tool-path tools
-    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.8.0/dotnet-sonarscanner/4.8.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
+    - dotnet tool install dotnet-sonarscanner --tool-path tools --version 4.10.0
+    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.10.0/dotnet-sonarscanner/4.10.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
     - 'ls tools'
     - 'dotnet restore'
   script:
