@@ -148,7 +148,6 @@ jobs:
           cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
           echo Write your commands here...
           echo ${{agent.services.localhost_postgres.ports.5432}}
-          echo "${{AGENT_SERVICES_localhost_mysql_PORTS_5432}}"
           echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
@@ -185,7 +184,6 @@ jobs:
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
           echo Write your commands here...
           echo ${{agent.services.localhost_mysql.ports.3306}}
-          echo "${{AGENT_SERVICES_localhost_mysql_PORTS_3306}}"
           echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
