@@ -103,8 +103,11 @@ namespace MyProject.Repository.Test.Helper
             }
             catch (System.Exception e)
             {
-                var assertMsg = "Failed SeedDb for " + dbContext.Database.ProviderName + "\n" +
-                     e.Message;
+                var assertMsg = "Failed SeedDb for " + dbContext.Database.ProviderName + "\n";
+                if (e.InnerException != null)
+                    assertMsg += e.InnerException.Message;
+                else
+                    assertMsg += e.Message;
                 Console.WriteLine(assertMsg);
                 _exceptionMessage = assertMsg;
             }
