@@ -105,14 +105,19 @@ jobs:
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'env | sort'
+
+        #  echo Write your commands here...
+        #   echo ${{agent.services.localhostsqlserver.ports.1433}}
+        #   echo Write your commands here end...
     - task: CmdLine@2
       displayName: 'enabledb'
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
-          echo Write your commands here...
-          echo ${{agent.services.localhostsqlserver.ports.1433}}
-          echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -141,14 +146,19 @@ jobs:
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'env | sort'
+
+      # echo Write your commands here...
+      # echo ${{agent.services.localhost_postgres.ports.5432}}
+      # echo Write your commands here end...
     - task: CmdLine@2
       displayName: 'enabledb'
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
-          echo Write your commands here...
-          echo ${{agent.services.localhost_postgres.ports.5432}}
-          echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -177,14 +187,19 @@ jobs:
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'env | sort'
+
+      #   echo Write your commands here...
+      # echo ${{agent.services.localhost_mysql.ports.3306}}
+      # echo Write your commands here end...
     - task: CmdLine@2
       displayName: 'enabledb'
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
-          echo Write your commands here...
-          echo ${{agent.services.localhost_mysql.ports.3306}}
-          echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
