@@ -1,5 +1,5 @@
 # DOTNET CORE CI PIPELINE EXAMPLE: 
-Goal to have dotnet core c# example pipelines for major git source control dev ops including github, azure devops, gitlab, bitbucket, and etc. Should auto run only on a new pull request, show test results in native ui per website, code coverage, and some additional manual steps running code quality analysis. Badge support native is also nice or from https://shields.io/category/build. Also will try service containers and database unit tests
+Goal to have dotnet core c# example pipelines for major git source control dev ops including github, azure devops, gitlab, bitbucket, and etc. Should auto run only on a new pull request, show test results in native ui per website, code coverage, and some additional manual steps running code quality analysis. Badge support native is also nice or from https://shields.io/category/build. Also will try service containers and database unit tests.
 Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/gitlab-ci-example-dotnetcore).  
 
 ## Contribution
@@ -24,6 +24,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] resharper cli - no manual triggers support
 * [x] security dependency scan - snyk
 * [x] artifacts 
+* [ ] [Services](https://docs.github.com/en/actions/configuring-and-managing-workflows/about-service-containers)
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
 * [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images
@@ -36,6 +37,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
     * `docker: Error response from daemon: authorization denied by plugin pipelines: -v only supports $BITBUCKET_CLONE_DIR and its subdirectories.`
 * [x] resharper cli
 * artifacts only last 12 hrs are downloaded in the `.tar.gz` format, could not figure out the curl method
+* [ ] [Services](https://support.atlassian.com/bitbucket-cloud/docs/use-services-and-databases-in-bitbucket-pipelines/)
 
 ### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master)
 * [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects
@@ -46,6 +48,8 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] CodeClimate 3m
 * [x] resharper cli
 * [x] artifacts
+* [x] [Service Containers](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml) mysql and postgress work fine
+  * mssql fails to connect after container should be initialized successfully. (only initializes for linux agents)
 
 ### [ ] [Gitlab](https://gitlab.com/lastlink/dotnet-ci-pipelines) [![pipeline status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/pipeline.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master)  [![coverage status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/coverage.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=alert_status)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=code_smells)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=sqale_index)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=coverage)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=ncloc)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines)
 * [limits](https://about.gitlab.com/pricing/) 2,000 minutes per month per group or user
@@ -61,6 +65,8 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] api docs - docfx
 * [x] Tests - Junit
 * [x] Coverage - coverlet
+* [x] [Services](https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service) - [mysql](https://docs.gitlab.com/ee/ci/services/mysql.html), postgres, mssql all work
+  * mssql occasionally fails to connect and step just needs to be rerun.
 * [x] Code Quality
     * [x] resharper clis
         * [x] inspectcode 1min
