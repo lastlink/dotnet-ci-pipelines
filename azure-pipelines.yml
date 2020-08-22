@@ -94,6 +94,9 @@ jobs:
     vmImage: 'ubuntu-16.04'
   services:
     localhostsqlserver: mssql
+    localhost_postgres: pg11
+    localhost_mysql: mysql
+
   steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 2.2'
