@@ -46,8 +46,8 @@ resources:
 
   - container: sqlserver
     image: mcr.microsoft.com/mssql/server:2019-latest
-    ports: 
-      - 1433:1433
+    # ports: 
+    #   - 1433:1433
     options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password'
 
 jobs:
@@ -65,7 +65,7 @@ jobs:
         restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enablesqlite'
-      continueOnError: true
+      # continueOnError: true
       inputs:
         script: |
           copy MyProject.Repository.Test\Data\appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
@@ -92,7 +92,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   services:
-    localhostmssql: sqlserver
+    localhost_mssql: sqlserver
   steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 2.2'
@@ -106,11 +106,12 @@ jobs:
         restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
-      continueOnError: true
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.devops.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.devops.gitlab.json ./MyProject.Repository.Test/Data/AppSettings.json
+          echo Write your commands here...
           echo "${AGENT_SERVICES_localhostmssql_PORTS_1433}"
+          echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -123,7 +124,7 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
 - job: unit_test_db_postgres
-  # condition: eq('${{ variables.runDbTests }}', 'true')
+  condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -141,7 +142,6 @@ jobs:
         restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
-      continueOnError: true
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
@@ -157,7 +157,7 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
 - job: unit_test_db_mysql
-  # condition: eq('${{ variables.runDbTests }}', 'true')
+  condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -175,7 +175,6 @@ jobs:
         restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
-      continueOnError: true
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
