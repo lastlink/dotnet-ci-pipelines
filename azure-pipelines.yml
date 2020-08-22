@@ -46,7 +46,8 @@ resources:
 
   - container: sqlserver
     image: mcr.microsoft.com/mssql/server:2019-latest
-    # ports: 
+    ports: 
+      - 1433
     #   - 1433:1433
     options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password'
 
@@ -145,6 +146,9 @@ jobs:
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
+          echo Write your commands here...
+          echo "${AGENT_SERVICES_localhost_mysql_PORTS_5432}"
+          echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -157,7 +161,7 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
 - job: unit_test_db_mysql
-  condition: eq('${{ variables.runDbTests }}', 'true')
+  # condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -178,6 +182,9 @@ jobs:
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
+          echo Write your commands here...
+          echo "${AGENT_SERVICES_localhost_mysql_PORTS_3306}"
+          echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
