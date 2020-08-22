@@ -49,7 +49,7 @@ resources:
     ports: 
       # - 1433
       - 1433:1433
-    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password'
+    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
 
 jobs:
 - job: test
