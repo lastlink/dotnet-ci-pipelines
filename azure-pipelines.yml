@@ -125,7 +125,7 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
 - job: unit_test_db_postgres
-  condition: eq('${{ variables.runDbTests }}', 'true')
+  # condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
     vmImage: 'ubuntu-latest'
   services:
