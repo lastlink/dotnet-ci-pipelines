@@ -9,11 +9,6 @@ pr:
     include:
       - master
 
-parameters:
-- name: runDbTests
-  default: false # value passed to the condition
-  type: boolean
-
 trigger:
   branches:
     include:
