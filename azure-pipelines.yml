@@ -59,16 +59,10 @@ jobs:
         packageType: sdk
         version: 2.2.207
         installationPath: $(Agent.ToolsDirectory)/dotnet
-        - task: NuGetToolInstaller@1
-        - task: NuGetCommand@2
-          inputs:
-            restoreSolution: '$(solution)'
-    # - task: VSBuild@1
-    #   inputs:
-    #     solution: '$(solution)'
-    #     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    #     platform: '$(buildPlatform)'
-    #     configuration: '$(buildConfiguration)'
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enablesqlite'
       continueOnError: true
@@ -85,6 +79,13 @@ jobs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
 - job: unit_test_db_mssql
   # continueOnError: true
   pool:
@@ -98,10 +99,10 @@ jobs:
         packageType: sdk
         version: 2.2.207
         installationPath: $(Agent.ToolsDirectory)/dotnet
-        - task: NuGetToolInstaller@1
-        - task: NuGetCommand@2
-          inputs:
-            restoreSolution: '$(solution)'
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
       continueOnError: true
@@ -131,10 +132,10 @@ jobs:
         packageType: sdk
         version: 2.2.207
         installationPath: $(Agent.ToolsDirectory)/dotnet
-        - task: NuGetToolInstaller@1
-        - task: NuGetCommand@2
-          inputs:
-            restoreSolution: '$(solution)'
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
       continueOnError: true
@@ -164,10 +165,10 @@ jobs:
         packageType: sdk
         version: 2.2.207
         installationPath: $(Agent.ToolsDirectory)/dotnet
-        - task: NuGetToolInstaller@1
-        - task: NuGetCommand@2
-          inputs:
-            restoreSolution: '$(solution)'
+    - task: NuGetToolInstaller@1
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
       continueOnError: true
