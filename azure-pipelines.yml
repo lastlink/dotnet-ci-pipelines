@@ -91,7 +91,7 @@ jobs:
   # condition: eq('${{ variables.runDbTests }}', 'true')
   # continueOnError: true
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'ubuntu-16.04'
   services:
     localhostsqlserver: sqlserver
   steps:
