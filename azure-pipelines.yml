@@ -53,16 +53,22 @@ resources:
 jobs:
 - job: test
   steps:
-    - task: NuGetToolInstaller@1
-    - task: NuGetCommand@2
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
       inputs:
-        restoreSolution: '$(solution)'
-    - task: VSBuild@1
-      inputs:
-        solution: '$(solution)'
-        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-        platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
+    # - task: VSBuild@1
+    #   inputs:
+    #     solution: '$(solution)'
+    #     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    #     platform: '$(buildPlatform)'
+    #     configuration: '$(buildConfiguration)'
     - task: CmdLine@2
       displayName: 'enablesqlite'
       continueOnError: true
@@ -86,10 +92,16 @@ jobs:
   services:
     localhost_mssql: sqlserver
   steps:
-    - task: NuGetToolInstaller@1
-    - task: NuGetCommand@2
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
       inputs:
-        restoreSolution: '$(solution)'
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
       continueOnError: true
@@ -113,10 +125,16 @@ jobs:
   services:
     localhost_postgres: pg11
   steps:
-    - task: NuGetToolInstaller@1
-    - task: NuGetCommand@2
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
       inputs:
-        restoreSolution: '$(solution)'
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
       continueOnError: true
@@ -140,10 +158,16 @@ jobs:
   services:
     localhost_mysql: mysql
   steps:
-    - task: NuGetToolInstaller@1
-    - task: NuGetCommand@2
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2'
       inputs:
-        restoreSolution: '$(solution)'
+        packageType: sdk
+        version: 2.2.207
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+        - task: NuGetToolInstaller@1
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enabledb'
       continueOnError: true
