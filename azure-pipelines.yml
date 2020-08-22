@@ -44,7 +44,7 @@ resources:
       - 5432:5432
     options: -e POSTGRES_PASSWORD=mysecretpassword
 
-  - container: sqlserver
+  - container: mssql
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports: 
       # - 1433
@@ -93,7 +93,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-16.04'
   services:
-    localhostsqlserver: sqlserver
+    localhostsqlserver: mssql
   steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 2.2'
