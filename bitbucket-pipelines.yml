@@ -5,6 +5,15 @@
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: mcr.microsoft.com/dotnet/core/sdk:2.2.301
 
+definitions: 
+  services: 
+    mysql: 
+      image: mysql:5.7.29
+    pg11: 
+      image: postgres:11
+    mssql: 
+      image: mcr.microsoft.com/mssql/server:2019-latest
+
 # yml validator
 # https://bitbucket-pipelines.prod.public.atl-paas.net/validator
 pipelines:
@@ -17,6 +26,7 @@ pipelines:
           script: # Modify the comma`nds below to build your repository.
             - dotnet restore
             - dotnet build
+            - cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
             - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
             # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
             - mv MyProject.Test/TestResults MyProject.Test/test-results
@@ -33,9 +43,42 @@ pipelines:
           artifacts:
             - Reports/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
-      - step:
+        - step:
+          name: unit_test_db_mssql
+          script:
+            # - ignore failure
+            - set +e
+            - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+            - cd MyProject.Repository.Test
+            - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
+            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+            # Enable exit on non 0
+            - set -e
+          services: 
+            - mssql 
+        - step:
+          name: unit_test_db_mysql
+          script:
+            - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+            - cd MyProject.Repository.Test
+            - cp ./Data/appSettings.devops.mysql.json ./Data/AppSettings.json
+            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+          services: 
+            - mysql 
+        - step:
+          name: unit_test_db_postgres
+          script:
+            - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+            - cd MyProject.Repository.Test
+            - cp ./Data/appSettings.devops.postgres.json ./Data/AppSettings.json
+            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+          services: 
+            - pg11
+        - step:
           name: Resharper cli
           script:
+            # ignore failure
+            - set +e
             - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
             - >
               if [ ! -d "resharper" ]; then
