@@ -92,7 +92,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   services:
-    localhost_mssql: sqlserver
+    localhostmssql: sqlserver
   steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 2.2'
@@ -110,6 +110,7 @@ jobs:
       inputs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+          echo "${AGENT_SERVICES_localhostmssql_PORTS_1433}"
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
