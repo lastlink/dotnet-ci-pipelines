@@ -108,9 +108,9 @@ jobs:
       displayName: 'enabledb'
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.devops.gitlab.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
           echo Write your commands here...
-          echo "${AGENT_SERVICES_localhostmssql_PORTS_1433}"
+          echo "${AGENT_SERVICES_localhost_mssql_PORTS_1433}"
           echo Write your commands here end...
     - task: DotNetCoreCLI@2
       inputs:
