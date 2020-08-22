@@ -109,7 +109,7 @@ jobs:
       continueOnError: true
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.devops.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -143,7 +143,7 @@ jobs:
       continueOnError: true
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -177,7 +177,7 @@ jobs:
       continueOnError: true
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
