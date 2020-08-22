@@ -208,7 +208,7 @@ debug:
   stage: test
   script:
     # run sqlite test
-    - cp MyProject.Repository.Test/Data/appSettings.gitlab.json.json MyProject.Repository.Test/Data/AppSettings.json
+    - cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
     - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
     # each reporttype must be a separate line, doesn't work together ; separated
     - ls -ld ${CI_PROJECT_DIR}/**/TestResults/*
