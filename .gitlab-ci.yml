@@ -29,6 +29,125 @@ cache:
 stages:
   - test
   - deploy
+  - quality
+
+unit_test_db_mssql:
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    ACCEPT_EULA: Y
+    SA_PASSWORD: yourStrong(!)Password
+  stage: test
+  services:
+    - name: mcr.microsoft.com/mssql/server:2019-latest
+      alias: localhost_mssql
+  rules:
+    - if: '$DATABASE_DISABLED || $DATABASE_MSSQL_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: manual
+      allow_failure: true
+  # rules:
+    # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
+  before_script:
+    - 'ls'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/appsettings-Dev.json ${CI_PROJECT_DIR}/MyProject.Api/appsettings.json'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings-dev.json ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings.json'
+    - 'echo | dotnet --version'
+    - 'dotnet restore'
+  script:
+    - cd MyProject.Repository.Test
+    - cp ./Data/appSettings.gitlab.mssql.json ./Data/AppSettings.json
+    - dotnet test --logger "junit"
+    - cd ..
+    - ls -ld *.Test/TestResults/*
+  artifacts:
+    paths:
+      - '*.Test/TestResults/TestResults.xml'
+    reports:
+        junit:
+          - '*.Test/TestResults/TestResults.xml'
+
+unit_test_db_mysql:
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    MYSQL_DATABASE: "mockDb"
+    MYSQL_ROOT_PASSWORD: "mysecretpw"
+  stage: test
+  rules:
+    - if: '$DATABASE_DISABLED || $DATABASE_MYSQL_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+  services:
+    - name: mysql:5.7.29
+      alias: localhost_mysql
+  # rules:
+    # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
+  before_script:
+    - 'ls'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/appsettings-Dev.json ${CI_PROJECT_DIR}/MyProject.Api/appsettings.json'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings-dev.json ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings.json'
+    - 'echo | dotnet --version'
+    - 'dotnet restore'
+  script:
+    - cd MyProject.Repository.Test
+    - cp ./Data/appSettings.gitlab.mysql.json ./Data/AppSettings.json
+    - dotnet test --logger "junit"
+    - cd ..
+    - ls -ld *.Test/TestResults/*
+  artifacts:
+    paths:
+      - '*.Test/TestResults/TestResults.xml'
+    reports:
+        junit:
+          - '*.Test/TestResults/TestResults.xml'
+
+unit_test_db_postgres:
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    POSTGRES_DB: mockDb
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: "mysecretpassword"
+    POSTGRES_HOST_AUTH_METHOD: trust
+  stage: test
+  rules:
+    - if: '$DATABASE_DISABLED || $DATABASE_POSTGRES_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+  services:
+    - name: postgres:12.2-alpine
+      alias: localhost_postgres
+  # rules:
+    # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
+  before_script:
+    - 'ls'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/appsettings-Dev.json ${CI_PROJECT_DIR}/MyProject.Api/appsettings.json'
+    - 'cp ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings-dev.json ${CI_PROJECT_DIR}/MyProject.Api/Properties/launchSettings.json'
+    - 'echo | dotnet --version'
+    - 'dotnet restore'
+  script:
+    - cd MyProject.Repository.Test
+    - cp ./Data/appSettings.gitlab.postgres.json ./Data/AppSettings.json
+    - dotnet test --logger "junit"
+    - cd ..
+    - ls -ld *.Test/TestResults/*
+  artifacts:
+    paths:
+      - '*.Test/TestResults/TestResults.xml'
+    reports:
+        junit:
+          - '*.Test/TestResults/TestResults.xml'
+
 
 release:
   stage: deploy
@@ -40,6 +159,41 @@ release:
   script:
     # The output path is relative to the position of the csproj-file
     - dotnet publish -c Release -o ../publish MyProject/MyProject.csproj
+
+# run unit tests, with sonarqube code quality
+sonarcloud_check_master:
+  only:
+    - master
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+  stage: quality
+  before_script:
+    - apt-get update && apt-get install -qq -y openjdk-8-jre > /dev/null
+    - java -version
+    - dotnet tool install dotnet-sonarscanner --tool-path tools --version 4.10.0
+    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.10.0/dotnet-sonarscanner/4.10.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
+    - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
+    - 'ls tools'
+    - 'dotnet restore'
+  script:
+    # https://github.com/SonarSource/sonar-scanner-msbuild/blob/master/sonar-docs/analysis/scan/sonarscanner-for-msbuild.md
+    - ./tools/dotnet-sonarscanner begin /k:"lastlink_dotnet-ci-pipelines" /o:"lastlink" /d:sonar.login="${SONAR_TOKEN}" /d:sonar.host.url="${SONAR_HOST_URL}"  /d:sonar.cs.opencover.reportsPaths="*.Test/TestResults/coverage.opencover.xml"
+    - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
+    - ./tools/dotnet-sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:Reports_Coverage" -reportTypes:TextSummary;
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:Reports_Coverage" -reportTypes:Html;
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:public" -reportTypes:Badges;
+    - ls Reports_Coverage
+    - cat ./Reports_Coverage/Summary.txt | grep 'Line coverage'
+  allow_failure: true
+  coverage: /Line coverage[\s\S].+%/
+  artifacts:
+    paths:
+      - Reports_Coverage/
+      - '*.Test/TestResults/TestResults.xml'
+    reports:
+        junit:
+          - '*.Test/TestResults/TestResults.xml'
     
 debug:
   only:
@@ -53,13 +207,15 @@ debug:
    - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
   stage: test
   script:
-    - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+    # run sqlite test
+    - cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
+    - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
     # each reporttype must be a separate line, doesn't work together ; separated
     - ls -ld ${CI_PROJECT_DIR}/**/TestResults/*
     - mkdir -p public
-    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:TextSummary;
-    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports_Coverage" -reportTypes:Html;
-    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/*/coverage.cobertura.xml" "-targetdir:public" -reportTypes:Badges;
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:Reports_Coverage" -reportTypes:TextSummary;
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:Reports_Coverage" -reportTypes:Html;
+    - ./tools/reportgenerator "-reports:${CI_PROJECT_DIR}/**/TestResults/coverage.opencover.xml;" "-targetdir:public" -reportTypes:Badges;
     - ls Reports_Coverage
     - cat ./Reports_Coverage/Summary.txt | grep 'Line coverage'
   coverage: /Line coverage[\s\S].+%/
@@ -70,6 +226,37 @@ debug:
     reports:
       junit:
         - '*.Test/TestResults/TestResults.xml'
+  cache:
+    key: "${CI_PIPELINE_ID}"
+    paths:
+      - MyProject.Test/TestResults
+
+# sonarqube only test that is ok to fail
+sonarcloud_check:
+  only:
+    - merge_requests
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+  stage: quality
+  before_script:
+    - apt-get update && apt-get install -qq -y openjdk-8-jre > /dev/null
+    - java -version
+    - dotnet tool install dotnet-sonarscanner --tool-path tools --version 4.10.0
+    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.10.0/dotnet-sonarscanner/4.10.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
+    - 'ls tools'
+    - 'dotnet restore'
+  script:
+    # https://github.com/SonarSource/sonar-scanner-msbuild/blob/master/sonar-docs/analysis/scan/sonarscanner-for-msbuild.md
+    - git fetch origin
+    - ./tools/dotnet-sonarscanner begin /k:"lastlink_dotnet-ci-pipelines" /o:"lastlink" /d:sonar.login="${SONAR_TOKEN}" /d:sonar.host.url="${SONAR_HOST_URL}"  /d:sonar.cs.opencover.reportsPaths="*.Test/TestResults/coverage.opencover.xml"
+    - dotnet build
+    - ./tools/dotnet-sonarscanner end /d:sonar.login="${SONAR_TOKEN}"
+  allow_failure: true
+  cache:
+    key: "${CI_PIPELINE_ID}"
+    policy: pull
+    paths:
+      - MyProject.Test/TestResults
 
 # takes upwards of 10 minutes, make manual, working on cache
 codeclimate:
