@@ -76,7 +76,7 @@ jobs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
-- job: test-mssql
+- job: unit_test_db_mssql
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -103,7 +103,7 @@ jobs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
-- job: test-postgres
+- job: unit_test_db_postgres
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -130,7 +130,7 @@ jobs:
         codeCoverageTool: 'Cobertura'
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
-- job: test-mysql
+- job: unit_test_db_mysql
   pool:
     vmImage: 'ubuntu-latest'
   services:
