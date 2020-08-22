@@ -40,6 +40,12 @@ jobs:
         msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
+    - task: CmdLine@2
+      displayName: 'enablesqlite'
+      continueOnError: true
+      inputs:
+        script: |
+          copy MyProject.Repository.Test\Data\appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
