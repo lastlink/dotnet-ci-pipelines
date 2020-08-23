@@ -9,10 +9,22 @@ definitions:
   services: 
     mysql: 
       image: mysql:5.7.29
+      variables:
+        MYSQL_DATABASE: "mockDb"
+        MYSQL_ROOT_PASSWORD: "mysecretpw"
     pg11: 
       image: postgres:11
+      variables:
+        POSTGRES_DB: mockDb
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: "mysecretpassword"
+        POSTGRES_HOST_AUTH_METHOD: trust
     mssql: 
       image: mcr.microsoft.com/mssql/server:2019-latest
+      variables:
+        GIT_SUBMODULE_STRATEGY: recursive
+        ACCEPT_EULA: Y
+        SA_PASSWORD: yourStrong(!)Password
 
 # yml validator
 # https://bitbucket-pipelines.prod.public.atl-paas.net/validator
