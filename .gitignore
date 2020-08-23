@@ -228,3 +228,6 @@ _site*
 *.7z
 7zip
 wkhtmltox
+.sonarqube
+appsettings.json
+launchSettings.json
