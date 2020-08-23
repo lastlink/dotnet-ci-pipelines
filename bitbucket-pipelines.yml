@@ -44,9 +44,9 @@ pipelines:
             - mv MyProject.Test/TestResults MyProject.Test/test-results
             - mv MyProject.Repository.Test/TestResults MyProject.Repository.Test/test-results
             - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-            - ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:TextSummary;
-            - ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
-            - ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
+            - ./tools/reportgenerator "-reports:**/test-results/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:TextSummary;
+            - ./tools/reportgenerator "-reports:**/test-results/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
+            - ./tools/reportgenerator "-reports:**/test-results/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
             - cat ./Reports/Summary.txt
             # - pipe: atlassian/bitbucket-upload-file:0.1.2
             #   variables:
@@ -70,11 +70,11 @@ pipelines:
               name: unit_test_db_mssql
               script:
                 # - ignore failure
-                - set +e
+                # - set +e
                 - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
                 - cd MyProject.Repository.Test
                 - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
-                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'|| true
                 - mv TestResults test-results
                 # Enable exit on non 0
                 # - set -e
