@@ -2,6 +2,7 @@ name: .NET Core
 
 on: [push]
 
+
 env:
   NUGET_PACKAGES_DIRECTORY: '.nupkg'
   RESHARPER_CLI_NAME: 'JetBrains.ReSharper.CommandLineTools.Unix'
