@@ -77,7 +77,7 @@ jobs:
       with:
         dotnet-version: 2.2.301
     - name: enabledb
-      run: cp ./MyProject.Repository.Test/Data/appSettings.bitbuckdt.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+      run: cp ./MyProject.Repository.Test/Data/appSettings.bitbucket.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
       run: |
         cd MyProject.Repository.Test
