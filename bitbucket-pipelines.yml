@@ -5,6 +5,27 @@
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: mcr.microsoft.com/dotnet/core/sdk:2.2.301
 
+definitions: 
+  services: 
+    mysql: 
+      image: mysql:5.7.29
+      variables:
+        MYSQL_DATABASE: "mockDb"
+        MYSQL_ROOT_PASSWORD: "mysecretpw"
+    pg11: 
+      image: postgres:11
+      variables:
+        POSTGRES_DB: mockDb
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: "mysecretpassword"
+        POSTGRES_HOST_AUTH_METHOD: trust
+    mssql: 
+      image: mcr.microsoft.com/mssql/server:2019-latest
+      variables:
+        GIT_SUBMODULE_STRATEGY: recursive
+        ACCEPT_EULA: Y
+        SA_PASSWORD: yourStrong(!)Password
+
 # yml validator
 # https://bitbucket-pipelines.prod.public.atl-paas.net/validator
 pipelines:
@@ -17,13 +38,15 @@ pipelines:
           script: # Modify the comma`nds below to build your repository.
             - dotnet restore
             - dotnet build
-            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+            - cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
+            - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
             # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
             - mv MyProject.Test/TestResults MyProject.Test/test-results
+            - mv MyProject.Repository.Test/TestResults MyProject.Repository.Test/test-results
             - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
-            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
-            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+            - ./tools/reportgenerator "-reports:**/test-results/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:TextSummary;
+            - ./tools/reportgenerator "-reports:**/test-results/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
+            - ./tools/reportgenerator "-reports:**/test-results/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
             - cat ./Reports/Summary.txt
             # - pipe: atlassian/bitbucket-upload-file:0.1.2
             #   variables:
@@ -34,8 +57,44 @@ pipelines:
             - Reports/**
             # - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"Reports"
       - step:
+              name: unit_test_db_mysql
+              script:
+                - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+                - cd MyProject.Repository.Test
+                - cp ./Data/appSettings.devops.mysql.json ./Data/AppSettings.json
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
+                - mv TestResults test-results
+              services: 
+                - mysql
+      - step:
+              name: unit_test_db_mssql
+              script:
+                # - ignore failure
+                # - set +e
+                - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+                - cd MyProject.Repository.Test
+                - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'|| true
+                - mv TestResults test-results
+                # Enable exit on non 0
+                # - set -e
+              services: 
+                - mssql
+      - step:
+              name: unit_test_db_postgres
+              script:
+                - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
+                - cd MyProject.Repository.Test
+                - cp ./Data/appSettings.devops.postgres.json ./Data/AppSettings.json
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
+                - mv TestResults test-results
+              services: 
+                - pg11
+      - step:
           name: Resharper cli
           script:
+            # ignore failure
+            - set +e
             - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
             - >
               if [ ! -d "resharper" ]; then
