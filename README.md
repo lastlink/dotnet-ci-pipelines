@@ -24,7 +24,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] resharper cli - no manual triggers support
 * [x] security dependency scan - snyk
 * [x] artifacts 
-* [ ] [Services](https://docs.github.com/en/actions/configuring-and-managing-workflows/about-service-containers) mysql, [postgres](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-postgresql-service-containers), mssql
+* [x] [Services](https://docs.github.com/en/actions/configuring-and-managing-workflows/about-service-containers) mysql, [postgres](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-postgresql-service-containers), and mssql work like a charm
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
 * [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images
@@ -37,7 +37,8 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
     * `docker: Error response from daemon: authorization denied by plugin pipelines: -v only supports $BITBUCKET_CLONE_DIR and its subdirectories.`
 * [x] resharper cli
 * artifacts only last 12 hrs are downloaded in the `.tar.gz` format, could not figure out the curl method
-* [ ] [Services](https://support.atlassian.com/bitbucket-cloud/docs/use-services-and-databases-in-bitbucket-pipelines/)
+* [x] [Services](https://support.atlassian.com/bitbucket-cloud/docs/use-services-and-databases-in-bitbucket-pipelines/) mysql and postgres work
+  * mssql starts up, gives lots of details on docker image running, not enough detail for why test was failing
 
 ### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master)
 * [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects
