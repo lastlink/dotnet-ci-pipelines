@@ -9,11 +9,6 @@ pr:
     include:
       - master
 
-parameters:
-- name: runDbTests
-  default: false # value passed to the condition
-  type: boolean
-
 trigger:
   branches:
     include:
@@ -49,11 +44,12 @@ resources:
       - 5432:5432
     options: -e POSTGRES_PASSWORD=mysecretpassword
 
-  - container: sqlserver
-    image: mcr.microsoft.com/mssql/server:2019-latest
+  - container: mssql
+    image: mcr.microsoft.com/mssql/server:2017-latest
     ports: 
+      # - 1433
       - 1433:1433
-    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password'
+    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
 
 jobs:
 - job: test
@@ -70,7 +66,7 @@ jobs:
         restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enablesqlite'
-      continueOnError: true
+      # continueOnError: true
       inputs:
         script: |
           copy MyProject.Repository.Test\Data\appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
@@ -92,12 +88,13 @@ jobs:
         configuration: '$(buildConfiguration)'
 
 - job: unit_test_db_mssql
-  condition: eq('${{ variables.runDbTests }}', true)
-  # continueOnError: true
+  # condition: eq('${{ variables.runDbTests }}', 'true')
+  continueOnError: true
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'ubuntu-16.04'
   services:
-    localhost_mssql: sqlserver
+    localhostsqlserver: mssql
+
   steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 2.2'
@@ -109,12 +106,19 @@ jobs:
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'env | sort'
+
+        #  echo Write your commands here...
+        #   echo ${{agent.services.localhostsqlserver.ports.1433}}
+        #   echo Write your commands here end...
     - task: CmdLine@2
       displayName: 'enabledb'
-      continueOnError: true
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.devops.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -127,7 +131,7 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
 - job: unit_test_db_postgres
-  condition: eq('${{ variables.runDbTests }}', true)
+  # condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -143,12 +147,19 @@ jobs:
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'env | sort'
+
+      # echo Write your commands here...
+      # echo ${{agent.services.localhost_postgres.ports.5432}}
+      # echo Write your commands here end...
     - task: CmdLine@2
       displayName: 'enabledb'
-      continueOnError: true
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
@@ -161,7 +172,7 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.cobertura.xml'
 
 - job: unit_test_db_mysql
-  condition: eq('${{ variables.runDbTests }}', true)
+  # condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -177,12 +188,19 @@ jobs:
     - task: NuGetCommand@2
       inputs:
         restoreSolution: '$(solution)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'env | sort'
+
+      #   echo Write your commands here...
+      # echo ${{agent.services.localhost_mysql.ports.3306}}
+      # echo Write your commands here end...
     - task: CmdLine@2
       displayName: 'enabledb'
-      continueOnError: true
       inputs:
         script: |
-          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
