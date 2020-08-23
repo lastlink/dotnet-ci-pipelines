@@ -27,13 +27,13 @@ pipelines:
             - dotnet restore
             - dotnet build
             - cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
-            - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+            - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
             # https://confluence.atlassian.com/bitbucket/test-reporting-in-pipelines-939708543.html move junit reports need to do for each test project
             - mv MyProject.Test/TestResults MyProject.Test/test-results
             - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
-            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
-            - ./tools/reportgenerator "-reports:**/test-results/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+            - ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:TextSummary;
+            - ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
+            - ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
             - cat ./Reports/Summary.txt
             # - pipe: atlassian/bitbucket-upload-file:0.1.2
             #   variables:
@@ -49,7 +49,7 @@ pipelines:
                 - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
                 - cd MyProject.Repository.Test
                 - cp ./Data/appSettings.devops.mysql.json ./Data/AppSettings.json
-                - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
               services: 
                 - mysql
       - step:
@@ -60,7 +60,7 @@ pipelines:
                 - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
                 - cd MyProject.Repository.Test
                 - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
-                - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
                 # Enable exit on non 0
                 - set -e
               services: 
@@ -71,7 +71,7 @@ pipelines:
                 - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
                 - cd MyProject.Repository.Test
                 - cp ./Data/appSettings.devops.postgres.json ./Data/AppSettings.json
-                - dotnet test --logger "junit" --collect:"XPlat Code Coverage"
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
               services: 
                 - pg11
       - step:
