@@ -2,6 +2,7 @@ name: .NET Core
 
 on: [push]
 
+# use https://marketplace.visualstudio.com/items?itemName=me-dutour-mathieu.vscode-github-actions to validate yml in vscode
 env:
   NUGET_PACKAGES_DIRECTORY: '.nupkg'
   RESHARPER_CLI_NAME: 'JetBrains.ReSharper.CommandLineTools.Unix'
@@ -24,14 +25,16 @@ jobs:
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Tests
-      run: dotnet test --collect:"XPlat Code Coverage"
+      run: |
+        cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
+        dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
     - name: Coverage Report
       run: |
         dotnet --version
         dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-        ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
-        ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
-        ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+        ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:TextSummary;
+        ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
+        ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
         cat ./Reports/Summary.txt
     - uses: actions/upload-artifact@v1
       with:
@@ -50,6 +53,98 @@ jobs:
       with:
           name: CodeQuality
           path: CodeQuality
+  
+  unit_test_db_mssql:
+    runs-on: ubuntu-latest
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        #
+        ports:
+          # Opens tcp port 6379 on the host and service container
+          - 1433:1433
+        env:
+          GIT_SUBMODULE_STRATEGY: recursive
+          ACCEPT_EULA: Y
+          SA_PASSWORD: yourStrong(!)Password
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.301
+    - name: enabledb
+      run: cp ./MyProject.Repository.Test/Data/appSettings.bitbucket.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - name: Tests
+      run: |
+        cd MyProject.Repository.Test
+        dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
+
+  unit_test_db_postgres:
+    runs-on: ubuntu-latest
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: postgres:11
+        #
+        ports:
+          - 5432:5432
+        # Provide the password for postgres
+        env:
+          POSTGRES_DB: mockDb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: "mysecretpassword"
+          POSTGRES_HOST_AUTH_METHOD: trust
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.301
+    - name: enabledb
+      run: cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - name: Tests
+      run: |
+        cd MyProject.Repository.Test
+        dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
+
+  unit_test_db_mysql:
+    runs-on: ubuntu-latest
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: mysql:5.7.29
+        #
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: "mockDb"
+          MYSQL_ROOT_PASSWORD: "mysecretpw"
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.301
+    - name: enabledb
+      run: cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
+    - name: Tests
+      run: |
+        cd MyProject.Repository.Test
+        dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
   
   code_docs:
     runs-on: windows-latest
