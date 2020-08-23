@@ -32,9 +32,9 @@ jobs:
       run: |
         dotnet --version
         dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-        ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:TextSummary;
-        ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Html;
-        ./tools/reportgenerator "-reports:**/TestResults/*/coverage.cobertura.xml" "-targetdir:Reports" -reportTypes:Badges;
+        ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:TextSummary;
+        ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
+        ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
         cat ./Reports/Summary.txt
     - uses: actions/upload-artifact@v1
       with:
