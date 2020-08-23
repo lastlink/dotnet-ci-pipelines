@@ -24,7 +24,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] resharper cli - no manual triggers support
 * [x] security dependency scan - snyk
 * [x] artifacts 
-* [ ] [Services](https://docs.github.com/en/actions/configuring-and-managing-workflows/about-service-containers)
+* [ ] [Services](https://docs.github.com/en/actions/configuring-and-managing-workflows/about-service-containers) mysql, [postgres](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-postgresql-service-containers), mssql
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
 * [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images

@@ -66,6 +66,10 @@ jobs:
         ports:
           # Opens tcp port 6379 on the host and service container
           - 1433:1433
+        env:
+          GIT_SUBMODULE_STRATEGY: recursive
+          ACCEPT_EULA: Y
+          SA_PASSWORD: yourStrong(!)Password
     steps:
     - uses: actions/checkout@v1
     - name: Setup .NET Core
@@ -90,6 +94,18 @@ jobs:
         #
         ports:
           - 5432:5432
+        # Provide the password for postgres
+        env:
+          POSTGRES_DB: mockDb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: "mysecretpassword"
+          POSTGRES_HOST_AUTH_METHOD: trust
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v1
     - name: Setup .NET Core
@@ -114,6 +130,9 @@ jobs:
         #
         ports:
           - 3306:3306
+        env:
+          MYSQL_DATABASE: "mockDb"
+          MYSQL_ROOT_PASSWORD: "mysecretpw"
     steps:
     - uses: actions/checkout@v1
     - name: Setup .NET Core
