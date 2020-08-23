@@ -68,10 +68,10 @@ pipelines:
               name: unit_test_db_mssql
               script:
                 # - ignore failure
-                # - set +e
                 - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
                 - cd MyProject.Repository.Test
                 - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
+                - set +e
                 - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
                 # Enable exit on non 0
                 # - set -e
