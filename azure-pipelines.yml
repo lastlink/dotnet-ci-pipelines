@@ -130,7 +130,7 @@ jobs:
   - task: CmdLine@2
     displayName: 'sqlcmd'
     inputs:
-      script: 'sqlcmd -S localhost -d master -U sa -P yourStrong(!)Password -Q "SELECT @@version;"'
+      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
 
 - job: unit_test_db_mssql
   # condition: eq('${{ variables.runDbTests }}', 'true')
