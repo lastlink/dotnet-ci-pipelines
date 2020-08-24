@@ -45,7 +45,7 @@ resources:
     options: -e POSTGRES_PASSWORD=mysecretpassword
 
   - container: mssql
-    image: mcr.microsoft.com/mssql/server:2017-latest
+    image: mcr.microsoft.com/mssql/server:2019-latest
     ports: 
       # - 1433
       - 1433:1433
