@@ -87,6 +87,41 @@ jobs:
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
 
+- job: unit_test_db_mssql_npm
+  services:
+    mssql: mssql
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: echo Hello, world!
+    displayName: 'Run a one-line script'
+
+
+  - task: CmdLine@2
+    inputs:
+      script: 'pip install pyodbc'
+      workingDirectory: '$(build.sourcesdirectory)'
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your PowerShell commands here.
+        
+        start-sleep -s 10
+  - task: CmdLine@2
+    inputs:
+      script: 'docker logs mssql'
+  - task: CmdLine@2
+    inputs:
+      script: 'npm install mssql'
+      workingDirectory: '$(build.sourcesdirectory)'
+  - task: CmdLine@2
+    inputs:
+      script: 'docker ps -all'
+  - task: CmdLine@2
+    inputs:
+      script: 'sqlcmd -S localhost -d master -U sa -P Password123 -Q "SELECT @@version;"'
+
 - job: unit_test_db_mssql
   # condition: eq('${{ variables.runDbTests }}', 'true')
   continueOnError: true
