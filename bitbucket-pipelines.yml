@@ -71,6 +71,7 @@ pipelines:
               script:
                 # - ignore failure
                 # - set +e
+                - sleep 10
                 - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
                 - cd MyProject.Repository.Test
                 - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
