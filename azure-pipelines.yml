@@ -81,7 +81,7 @@ jobs:
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.opencover.xml'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
 
     - task: VSBuild@1
       inputs:
@@ -185,7 +185,7 @@ jobs:
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.opencover.xml'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
 
 - job: unit_test_db_postgres
   # condition: eq('${{ variables.runDbTests }}', 'true')
@@ -226,7 +226,7 @@ jobs:
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.opencover.xml'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
 
 - job: unit_test_db_mysql
   # condition: eq('${{ variables.runDbTests }}', 'true')
@@ -267,4 +267,4 @@ jobs:
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)\**\coverage.opencover.xml'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
