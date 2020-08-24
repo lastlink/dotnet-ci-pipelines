@@ -160,6 +160,7 @@ jobs:
         #   echo ${{agent.services.localhostsqlserver.ports.1433}}
         #   echo Write your commands here end...
     - task: PowerShell@2
+      displayName: 'delay 10'
       inputs:
         targetType: 'inline'
         script: |
@@ -167,6 +168,7 @@ jobs:
           
           start-sleep -s 10
     - task: CmdLine@2
+      displayName: 'docker logs'
       inputs:
         script: 'docker logs mssql'
     - task: CmdLine@2
@@ -175,6 +177,7 @@ jobs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
+      displayName: 'database tests'
       inputs:
         command: 'test'
         workingDirectory: MyProject.Repository.Test
