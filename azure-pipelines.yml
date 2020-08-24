@@ -91,7 +91,7 @@ jobs:
   services:
     mssql: mssql
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-latest'
   steps:
   - script: echo Hello, world!
     displayName: 'Run a one-line script'
@@ -149,6 +149,16 @@ jobs:
         #  echo Write your commands here...
         #   echo ${{agent.services.localhostsqlserver.ports.1433}}
         #   echo Write your commands here end...
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your PowerShell commands here.
+          
+          start-sleep -s 10
+    - task: CmdLine@2
+      inputs:
+        script: 'docker logs mssql'
     - task: CmdLine@2
       displayName: 'enabledb'
       inputs:
