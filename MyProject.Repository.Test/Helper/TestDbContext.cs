@@ -179,7 +179,7 @@ namespace MyProject.Repository.Test.Helper
                     }
                     catch (System.Exception e)
                     {
-                        var assertMsg = "Failed for " + connectionStrings.Provider + "\n" + " providername:" + dbContext.Database.ProviderName;
+                        var assertMsg = "";
                         if (e.InnerException != null)
                             assertMsg += e.InnerException.Message;
                         else
