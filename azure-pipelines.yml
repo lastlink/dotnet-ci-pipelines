@@ -70,14 +70,13 @@ jobs:
         restoreSolution: '$(solution)'
     - task: CmdLine@2
       displayName: 'enablesqlite'
-      # continueOnError: true
       inputs:
         script: |
-          copy MyProject.Repository.Test\Data\appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
+          cp ./MyProject.Repository.Test/Data/appSettings.gitlab.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
-        arguments: '--collect:"XPlat Code Coverage"'
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
 
     - task: PublishCodeCoverageResults@1
       inputs:
@@ -134,7 +133,7 @@ jobs:
 
 - job: unit_test_db_mssql
   # condition: eq('${{ variables.runDbTests }}', 'true')
-  continueOnError: true
+  # continueOnError: true
   pool:
     vmImage: 'ubuntu-latest'
   services:
@@ -181,7 +180,7 @@ jobs:
       inputs:
         command: 'test'
         workingDirectory: MyProject.Repository.Test
-        arguments: '--collect:"XPlat Code Coverage"'
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
 
     - task: PublishCodeCoverageResults@1
       inputs:
@@ -222,7 +221,7 @@ jobs:
       inputs:
         command: 'test'
         workingDirectory: MyProject.Repository.Test
-        arguments: '--collect:"XPlat Code Coverage"'
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
 
     - task: PublishCodeCoverageResults@1
       inputs:
@@ -263,7 +262,7 @@ jobs:
       inputs:
         command: 'test'
         workingDirectory: MyProject.Repository.Test
-        arguments: '--collect:"XPlat Code Coverage"'
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
 
     - task: PublishCodeCoverageResults@1
       inputs:
