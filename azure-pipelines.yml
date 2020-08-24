@@ -49,7 +49,11 @@ resources:
     ports: 
       # - 1433
       - 1433:1433
-    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
+    env:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: yourStrong(!)Password
+      MSSQL_PID: Express
+    options: --name mssql
 
 jobs:
 - job: test
@@ -98,10 +102,12 @@ jobs:
 
 
   - task: CmdLine@2
+    displayName: 'pip'
     inputs:
       script: 'pip install pyodbc'
       workingDirectory: '$(build.sourcesdirectory)'
   - task: PowerShell@2
+    displayName: 'delay 10'
     inputs:
       targetType: 'inline'
       script: |
@@ -109,18 +115,22 @@ jobs:
         
         start-sleep -s 10
   - task: CmdLine@2
+    displayName: 'docker logs'
     inputs:
       script: 'docker logs mssql'
   - task: CmdLine@2
+    displayName: 'npm install'
     inputs:
       script: 'npm install mssql'
       workingDirectory: '$(build.sourcesdirectory)'
   - task: CmdLine@2
+    displayName: 'docker list'
     inputs:
       script: 'docker ps -all'
   - task: CmdLine@2
+    displayName: 'sqlcmd'
     inputs:
-      script: 'sqlcmd -S localhost -d master -U sa -P Password123 -Q "SELECT @@version;"'
+      script: 'sqlcmd -S localhost -d master -U sa -P yourStrong(!)Password -Q "SELECT @@version;"'
 
 - job: unit_test_db_mssql
   # condition: eq('${{ variables.runDbTests }}', 'true')
