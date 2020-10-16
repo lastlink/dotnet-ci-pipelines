@@ -53,6 +53,14 @@ jobs:
       with:
           name: CodeQuality
           path: CodeQuality
+    - name: prerelease
+      if: ${{secret.RIDS}} != ''
+      run: |
+        - echo 'build, obfuscate, and release'
+        - dotnet publish -c Release
+        - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+        - bash scripts/extractRelease.sh
+        - bash ../obfuscator/pipeline.sh
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest

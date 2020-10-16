@@ -3,7 +3,21 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Version>0.0.0.5</Version>
+    <Copyright>\xA9 Example LLC. All rights reserved.</Copyright>
+    <Description>dotnet ci pipeline console release</Description>
+    <PackageProjectUrl>example.com</PackageProjectUrl>
+    <Company>Example LLC</Company>
   </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(ConfigurationName) == Release AND $(rId) != ''">
+    <Exec Condition="$(OS) == Windows_NT" Command="set rId=$(rId)&#xD;&#xA;set TargetDir=$(TargetDir)&#xD;&#xA;..\scripts\build.cmd" />
+    <Exec Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' OR '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'" Command="export rId=$(rId)&#xD;&#xA;export TargetDir=$(TargetDir)&#xD;&#xA;bash ./scripts/build.sh" />
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(ConfigurationName) == Release">
+    <Exec Condition="$(OS) == Windows_NT" Command="set TargetDir=$(TargetDir)&#xD;&#xA;..\scripts\clean.cmd" />
+    <Exec Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' OR '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'" Command="bash ./scripts/clean.sh" />
+  </Target>
 
 </Project>

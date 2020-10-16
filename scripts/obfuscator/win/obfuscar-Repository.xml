@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Obfuscator>
+  <Var name="InPath" value=".\MyProject.Repository\bin\Release\netcoreapp2.2\publish" />
+  <!-- <Var name="OutPath" value="$(InPath)" /> -->
+  <Var name="OutPath" value="$(InPath)\ReadyForDeployment" />
+  <Var name="KeepPublicApi" value="true" />
+  <Var name="HidePrivateApi" value="true" />
+  <Var name="RenameProperties" value="false" />
+  <Var name="RenameEvents" value="false" />
+  <Var name="RenameFields" value="false" />
+  <Var name="UseUnicodeNames" value="false" />
+  <Var name="HideStrings" value="true" />
+  <Var name="OptimizeMethods" value="true" />
+  <Var name="SuppressIldasm" value="true" />
+  <Module file="$(InPath)\MyProject.Repository.dll" />
+</Obfuscator>
