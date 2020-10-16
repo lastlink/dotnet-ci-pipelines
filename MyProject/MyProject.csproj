@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>0.0.0.5</Version>
     <Copyright>\xA9 Example LLC. All rights reserved.</Copyright>
     <Description>dotnet ci pipeline console release</Description>
