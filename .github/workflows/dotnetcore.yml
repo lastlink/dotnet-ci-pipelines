@@ -22,7 +22,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: 3.1.102
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Tests
@@ -90,7 +90,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: 3.1.102
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.bitbucket.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
@@ -126,7 +126,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: 3.1.102
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
@@ -153,7 +153,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: 3.1.102
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
