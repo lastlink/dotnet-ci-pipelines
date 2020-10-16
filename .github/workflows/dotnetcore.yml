@@ -10,6 +10,7 @@ env:
   DOCKER_DRIVER: overlay
   CONTAINER_IMAGE: codeclimate/codeclimate
   CONTAINER_TAG: '0.85.2'
+  rIds: ${{ secrets.rIds }}
 
 jobs:
   build:
@@ -54,13 +55,13 @@ jobs:
           name: CodeQuality
           path: CodeQuality
     - name: prerelease
-      if: ${{secret.rIds}} != ''
+      if: ${{ env.rIds }} != ''
       run: |
         - echo 'build, obfuscate, and release'
         - dotnet publish -c Release
         - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
         - bash scripts/extractRelease.sh
-        - export rIds=${{secret.rIds}}
+        - export rIds=${{ env.rIds }}
         - bash ../obfuscator/pipeline.sh
   
   unit_test_db_mssql:
