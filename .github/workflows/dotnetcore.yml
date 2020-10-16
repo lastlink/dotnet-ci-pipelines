@@ -60,6 +60,7 @@ jobs:
         - dotnet publish -c Release
         - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
         - bash scripts/extractRelease.sh
+        - export rIds=${{secret.RIDS}}
         - bash ../obfuscator/pipeline.sh
   
   unit_test_db_mssql:
