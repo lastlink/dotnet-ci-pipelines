@@ -63,6 +63,11 @@ jobs:
         - bash scripts/extractRelease.sh
         - export rIds=${{ env.rIds }}
         - bash ../obfuscator/pipeline.sh
+    - uses: actions/upload-artifact@v1
+        if: ${{ env.rIds }} != ''
+        with:
+          name: Release
+          path: */bin/Release/netcoreapp3.1/*/publish/*
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
