@@ -223,6 +223,14 @@ jobs:
     name: Snyk Security Scan
     steps:
       - uses: actions/checkout@v1
+      - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.dotnetVersion}}
+      - name: Build with dotnet
+        run: |
+          export DOTNET_CLI_TELEMETRY_OPTOUT=1
+          dotnet build
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/dotnet@master
         with:
