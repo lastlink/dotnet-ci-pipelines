@@ -11,6 +11,7 @@ env:
   CONTAINER_IMAGE: codeclimate/codeclimate
   CONTAINER_TAG: '0.85.2'
   rIds: ${{ secrets.rIds }}
+  dotnetVersion: 3.1.102
 
 jobs:
   build:
@@ -22,7 +23,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.102
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Tests
@@ -62,12 +63,36 @@ jobs:
         - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
         - bash scripts/extractRelease.sh
         - export rIds=${{ env.rIds }}
-        - bash ../obfuscator/pipeline.sh
+        - bash ./scripts/pipeline.sh
     # - uses: actions/upload-artifact@v1
     #     if: ${{ env.rIds }} != ''
     #     with:
     #       name: Release
     #       path: */bin/Release/netcoreapp3.1/*/publish/*
+
+  build-win:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.dotnetVersion}}
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+    - name: Tests
+      run: |
+        copy MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
+        dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='.\TestResults\'
+    - name: prerelease
+      if: ${{ env.rIds }} != ''
+      run: |
+        - echo 'build, obfuscate, and release'
+        - dotnet publish -c Release
+        - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+        - scripts\extractRelease.cmd
+        - set rIds=$env:rIds
+        - .\scripts\pipeline.cmd
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
@@ -90,7 +115,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.102
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.bitbucket.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
@@ -126,7 +151,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.102
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
@@ -153,7 +178,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.102
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
