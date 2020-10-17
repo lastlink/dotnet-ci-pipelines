@@ -31,7 +31,7 @@ jobs:
       with:
         dotnet-version: ${{ env.dotnetVersion}}
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet publish -c Release
     - name: Tests
       run: |
         cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
@@ -65,7 +65,6 @@ jobs:
       if: ${{ env.rIds }} != ''
       run: |
         - echo 'build, obfuscate, and release'
-        - dotnet publish -c Release
         - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
         - bash scripts/extractRelease.sh
         - export rIds=${{ env.rIds }}
@@ -85,7 +84,7 @@ jobs:
       with:
         dotnet-version: ${{ env.dotnetVersion}}
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet publish -c Release
     - name: Tests
       run: |
         copy MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
@@ -94,7 +93,6 @@ jobs:
       if: ${{ env.rIds }} != ''
       run: |
         - echo "build, obfuscate, and release"
-        - dotnet publish -c Release
         - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
         - scripts\extractRelease.cmd
         - set rIds=$env:rIds
