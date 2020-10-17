@@ -76,7 +76,7 @@ jobs:
       uses: actions/upload-artifact@v2
       if: ${{ env.rIds }} != ''
       with:
-        name: Release_win
+        name: Release_unix
         path: Release/post
 
   build-win:
@@ -108,7 +108,7 @@ jobs:
       uses: actions/upload-artifact@v2
       if: ${{ env.rIds }} != ''
       with:
-        name: Release_unix
+        name: Release_win
         path: Release\post
   
   unit_test_db_mssql:
