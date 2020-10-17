@@ -69,11 +69,12 @@ jobs:
         bash scripts/extractRelease.sh
         export rIds=${{ env.rIds }}
         bash ./scripts/pipeline.sh
-    # - uses: actions/upload-artifact@v1
-    #     if: ${{ env.rIds }} != ''
-    #     with:
-    #       name: Release
-    #       path: */bin/Release/netcoreapp3.1/*/publish/*
+    - name: upload release
+      uses: actions/upload-artifact@v1
+      if: ${{ env.rIds }} != ''
+      with:
+        name: Release
+        path: */bin/Release/netcoreapp3.1/*/publish/*
 
   build-win:
     runs-on: windows-latest
