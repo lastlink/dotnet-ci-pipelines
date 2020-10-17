@@ -31,7 +31,9 @@ jobs:
       with:
         dotnet-version: ${{ env.dotnetVersion}}
     - name: Build with dotnet
-      run: dotnet publish -c Release
+      run: |
+        export DOTNET_CLI_TELEMETRY_OPTOUT=1
+        dotnet publish -c Release
     - name: Tests
       run: |
         cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
@@ -74,7 +76,7 @@ jobs:
       if: ${{ env.rIds }} != ''
       with:
         name: Release
-        path: ${{ env.GITHUB_WORKSPACE}}/*/bin/Release/netcoreapp3.1/*/publish/*
+        path: ${{ env.GITHUB_WORKSPACE}}/*/bin/Release/netcoreapp3.1/publish/*
 
   build-win:
     runs-on: windows-latest
@@ -85,7 +87,9 @@ jobs:
       with:
         dotnet-version: ${{ env.dotnetVersion}}
     - name: Build with dotnet
-      run: dotnet publish -c Release
+      run: |
+        set DOTNET_CLI_TELEMETRY_OPTOUT=1
+        dotnet publish -c Release
     - name: Tests
       run: |
         copy MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
@@ -103,7 +107,7 @@ jobs:
       if: ${{ env.rIds }} != ''
       with:
         name: Release
-        path: ${{ env.GITHUB_WORKSPACE}}/*/bin/Release/netcoreapp3.1/*/publish/*
+        path: ${{ env.GITHUB_WORKSPACE}}/*/bin/Release/netcoreapp3.1/publish/*
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
