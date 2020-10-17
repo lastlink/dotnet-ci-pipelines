@@ -224,9 +224,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.dotnetVersion}}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.dotnetVersion}}
       - name: Build with dotnet
         run: |
           export DOTNET_CLI_TELEMETRY_OPTOUT=1
