@@ -1,7 +1,7 @@
 @REM copy dlls wanted to artifact folder
 set folder=Release\pre
 echo %folder%
-mkdir %folder%'
+mkdir %folder%
 
 .\tools\obfuscar.console .\scripts\obfuscator\win\obfuscar-console.xml
 
