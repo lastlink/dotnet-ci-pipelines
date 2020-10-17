@@ -1,7 +1,5 @@
 name: .NET Core
 
-on: [push]
-
 # use https://marketplace.visualstudio.com/items?itemName=me-dutour-mathieu.vscode-github-actions to validate yml in vscode
 env:
   NUGET_PACKAGES_DIRECTORY: '.nupkg'
