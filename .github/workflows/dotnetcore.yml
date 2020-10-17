@@ -13,6 +13,14 @@ env:
   rIds: ${{ secrets.rIds }}
   dotnetVersion: 3.1.102
 
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
 jobs:
   build:
 
