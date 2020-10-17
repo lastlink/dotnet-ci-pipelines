@@ -1,6 +1,5 @@
 @REM copy dlls wanted to artifact folder
 set folder=Release\pre
-folder=Release\pre
 echo %folder%
 mkdir %folder%'
 
