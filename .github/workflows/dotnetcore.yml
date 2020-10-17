@@ -1,7 +1,5 @@
 name: .NET Core
 
-on: [push]
-
 # use https://marketplace.visualstudio.com/items?itemName=me-dutour-mathieu.vscode-github-actions to validate yml in vscode
 env:
   NUGET_PACKAGES_DIRECTORY: '.nupkg'
@@ -10,6 +8,16 @@ env:
   DOCKER_DRIVER: overlay
   CONTAINER_IMAGE: codeclimate/codeclimate
   CONTAINER_TAG: '0.85.2'
+  rIds: ${{ secrets.rIds }}
+  dotnetVersion: 3.1.102
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -21,9 +29,11 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: |
+        export DOTNET_CLI_TELEMETRY_OPTOUT=1
+        dotnet publish -c Release
     - name: Tests
       run: |
         cp MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
@@ -53,6 +63,53 @@ jobs:
       with:
           name: CodeQuality
           path: CodeQuality
+    - name: prerelease
+      if: ${{ env.rIds }} != ''
+      run: |
+        echo 'build, obfuscate, and release'
+        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+        bash scripts/extractRelease.sh
+        export rIds=${{ env.rIds }}
+        bash ./scripts/pipeline.sh
+        bash ./scripts/finalRelease.sh
+    - name: upload release
+      uses: actions/upload-artifact@v2
+      if: ${{ env.rIds }} != ''
+      with:
+        name: Release_unix
+        path: Release/post
+
+  build-win:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.dotnetVersion}}
+    - name: Build with dotnet
+      run: |
+        set DOTNET_CLI_TELEMETRY_OPTOUT=1
+        dotnet publish -c Release
+    - name: Tests
+      run: |
+        copy MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
+        dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='.\TestResults\'
+    - name: prerelease
+      if: ${{ env.rIds }} != ''
+      run: |
+        echo "build, obfuscate, and release"
+        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+        .\scripts\extractRelease.cmd
+        set rIds=$env:rIds
+        .\scripts\pipeline.cmd
+        .\scripts\finalRelease.cmd
+    - name: upload release
+      uses: actions/upload-artifact@v2
+      if: ${{ env.rIds }} != ''
+      with:
+        name: Release_win
+        path: Release\post
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
@@ -75,7 +132,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.bitbucket.mssql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
@@ -111,7 +168,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
@@ -138,7 +195,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.301
+        dotnet-version: ${{ env.dotnetVersion}}
     - name: enabledb
       run: cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - name: Tests
@@ -166,7 +223,17 @@ jobs:
     name: Snyk Security Scan
     steps:
       - uses: actions/checkout@v1
-      - name: Snyk CLI Action
-        uses: clarkio/snyk-cli-action@1.0.0
-        with: # Set the secret as an input
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.dotnetVersion}}
+      - name: Build with dotnet
+        run: |
+          export DOTNET_CLI_TELEMETRY_OPTOUT=1
+          dotnet build
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/dotnet@master
+        with:
+          args: --file=MyProject.sln
+        env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
