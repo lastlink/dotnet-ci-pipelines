@@ -70,11 +70,11 @@ jobs:
         export rIds=${{ env.rIds }}
         bash ./scripts/pipeline.sh
     - name: upload release
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       if: ${{ env.rIds }} != ''
       with:
         name: Release
-        path: */bin/Release/netcoreapp3.1/*/publish/*
+        path: ${{ env.GITHUB_WORKSPACE}}/*/bin/Release/netcoreapp3.1/*/publish/*
 
   build-win:
     runs-on: windows-latest
@@ -98,6 +98,12 @@ jobs:
         .\scripts\extractRelease.cmd
         set rIds=$env:rIds
         .\scripts\pipeline.cmd
+    - name: upload release
+      uses: actions/upload-artifact@v2
+      if: ${{ env.rIds }} != ''
+      with:
+        name: Release
+        path: ${{ env.GITHUB_WORKSPACE}}/*/bin/Release/netcoreapp3.1/*/publish/*
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
