@@ -225,6 +225,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/dotnet@master
-        args: --file=MyProject.sln
+        with:
+          args: --file=MyProject.sln
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
