@@ -64,11 +64,11 @@ jobs:
     - name: prerelease
       if: ${{ env.rIds }} != ''
       run: |
-        - echo 'build, obfuscate, and release'
-        - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
-        - bash scripts/extractRelease.sh
-        - export rIds=${{ env.rIds }}
-        - bash ./scripts/pipeline.sh
+        echo 'build, obfuscate, and release'
+        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+        bash scripts/extractRelease.sh
+        export rIds=${{ env.rIds }}
+        bash ./scripts/pipeline.sh
     # - uses: actions/upload-artifact@v1
     #     if: ${{ env.rIds }} != ''
     #     with:
@@ -92,11 +92,11 @@ jobs:
     - name: prerelease
       if: ${{ env.rIds }} != ''
       run: |
-        - echo "build, obfuscate, and release"
-        - dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
-        - scripts\extractRelease.cmd
-        - set rIds=$env:rIds
-        - .\scripts\pipeline.cmd
+        echo "build, obfuscate, and release"
+        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+        scripts\extractRelease.cmd
+        set rIds=$env:rIds
+        .\scripts\pipeline.cmd
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
