@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using MyProject.Repository.Data;
+using MyProject.Repository.Data.Models;
 using MyProject.Repository.Test.Helper;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace MyProject.Repository.Test.Database
@@ -32,6 +35,34 @@ namespace MyProject.Repository.Test.Database
         {
             _dbContexts[appSettings.Key].ValidSetup();
             Assert.True(_dbContexts[appSettings.Key].dbContext.Blog.Count() > 2);
+        }
+
+        [SkipDbIntegrationTheory]
+        [AppsettingsArrayAttribute]
+        public void blogdataMatches(KeyValuePair<string, AppSettings> appSettings)
+        {
+            _dbContexts[appSettings.Key].ValidSetup();
+            var testData = "Blogs";
+            var expectedResult = DataLoader.loadJsonArray<Blog>(testData: testData);
+            var result = _dbContexts[appSettings.Key].dbContext.Blog.ToList();
+            if (JsonConvert.SerializeObject(expectedResult) != JsonConvert.SerializeObject(result))
+                {
+
+                    var jsonSerializerSettings = new JsonSerializerSettings
+                    {
+                        // PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                        NullValueHandling = NullValueHandling.Ignore
+                    };
+                    var testDataResponses = DataLoader.loadJsonArray<Blog>(testData: testData);
+                    testDataResponses = result;
+                    var dataDir = Directory.GetCurrentDirectory() + DataLoader.rootPath + "Repository/" + testData + ".json";
+
+                    File.WriteAllText(dataDir, JsonConvert.SerializeObject(testDataResponses, Newtonsoft.Json.Formatting.Indented,
+                              jsonSerializerSettings));
+                }
+
+                Assert.Equal(JsonConvert.SerializeObject(expectedResult), JsonConvert.SerializeObject(result));
+            // Assert.True(_dbContexts[appSettings.Key].dbContext.Blog.Count() > 2);
         }
     }
 }
