@@ -231,3 +231,4 @@ wkhtmltox
 .sonarqube
 appsettings.json
 launchSettings.json
+*.db
