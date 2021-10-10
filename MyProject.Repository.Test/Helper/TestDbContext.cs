@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using MyProject.Repository.Data;
 using MyProject.Repository.Data.Models;
 using Xunit;
@@ -165,7 +167,26 @@ namespace MyProject.Repository.Test.Helper
                 PRIMARY KEY (`MigrationId`));
                 ");
                 }
-                dbContext.Database.Migrate();
+                // dbContext.Database.Migrate();
+                var migrationList = dbContext.Database.GetPendingMigrations();
+
+                //  new List<string>() { "InitialMigrations", "visibility", "addProductUnique", "requiredFields", "InitialDiscount", "UpdDiscAndSku", "fixDiscVers" };
+                foreach (var mig in migrationList)
+                {
+                    try
+                    {
+                        dbContext.GetService<IMigrator>().Migrate(mig);
+                    }
+                    catch (System.Exception e)
+                    {
+                        var assertMsg = "";
+                        if (e.InnerException != null)
+                            assertMsg += e.InnerException.Message;
+                        else
+                            assertMsg += e.Message;
+                        throw new Exception("Migration:" + mig + " e:" + assertMsg);
+                    }
+                }
 
                 // mock the managers and seed the data
                 // var userStore = new UserStore<Users>(dbContext);
@@ -193,7 +214,7 @@ namespace MyProject.Repository.Test.Helper
             }
             catch (System.Exception e)
             {
-                var assertMsg = "Failed SeedDb for " + dbContext.Database.ProviderName + "\n";
+                var assertMsg = "Failed for " + connectionStrings.Provider + "\n" + " providername:" + dbContext.Database.ProviderName + " m:";
                 if (e.InnerException != null)
                     assertMsg += e.InnerException.Message;
                 else
