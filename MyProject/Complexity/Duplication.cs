@@ -10,7 +10,7 @@ namespace MyProject.Complexity
             var result = input * 2;
             return result;
         }
-        
+
         public static int multiplyByTwo(int input)
         {
             var result = input * 2;

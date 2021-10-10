@@ -26,8 +26,8 @@
 #endregion
 
 #region Namespaces
-using System;
 using MyProject.Complexity;
+using System;
 #endregion
 
 namespace MyProject

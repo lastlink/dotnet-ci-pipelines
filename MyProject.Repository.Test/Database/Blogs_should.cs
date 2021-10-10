@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
 using MyProject.Repository.Data;
 using MyProject.Repository.Test.Helper;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace MyProject.Repository.Test.Database

@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using MyProject.Repository.Utils;
+using System;
 
 namespace MyProject.Repository.Migrations
 {
