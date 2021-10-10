@@ -26,8 +26,8 @@
 #endregion
 
 #region Namespaces
-using System;
 using MyProject.Complexity;
+using System;
 #endregion
 
 namespace MyProject
@@ -56,25 +56,24 @@ namespace MyProject
 
             name = Console.ReadLine();
 
-            int number;
 
-            bool changed = getChange();
+            //bool changed = GetChange();
 
-            changed = !getChange();
+            var changed = !GetChange();
 
             Console.WriteLine(changed.ToString());
 
-            bool success = Int32.TryParse(name, out number);
+            bool success = Int32.TryParse(name, out int number);
 
             if (success)
             {
-                var numResult = Duplication.timesTwo(number);
+                var numResult = Duplication.TimesTwo(number);
                 Console.WriteLine(numResult);
-                Console.WriteLine(Duplication.multiplyByTwo(numResult));
+                Console.WriteLine(Duplication.MultiplyByTwo(numResult));
             }
         }
 
-        private static bool getChange()
+        private static bool GetChange()
         {
             return true;
         }

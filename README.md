@@ -7,11 +7,11 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * Please do a pull request to the proper source control pipeline that you are trying to update.
 
 ## TOC
-* GitHub Actions
-* Bitbucket
-* Azure DevOps
-* Gitlab pipelines
-* Other notes
+* [GitHub Actions](#--github-actions-)
+* [Bitbucket](#--bitbucket)
+* [Azure DevOps](#--azure-devops-)
+* [Gitlab pipelines](#--gitlab--------)
+* [Other notes](#other)
 
 ### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/workflows/.net%20core/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions)
 
@@ -21,10 +21,12 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] api docs - docfx html only
 * [!] Tests - no display just logs and work flow
 * [ ] CodeClimate issues with non npm and docker in docker
-* [x] resharper cli - no manual triggers support
+* [x] resharper cli - no manual triggers supports
 * [x] security dependency scan - snyk
 * [x] artifacts 
 * [x] [Services](https://docs.github.com/en/actions/configuring-and-managing-workflows/about-service-containers) mysql, [postgres](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-postgresql-service-containers), and mssql work like a charm
+* [] release
+  * [] obfuscators
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
 * [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images
