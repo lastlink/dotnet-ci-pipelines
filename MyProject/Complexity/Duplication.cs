@@ -5,13 +5,13 @@ namespace MyProject.Complexity
     /// </summary>
     public class Duplication
     {
-        public static int timesTwo(int input)
+        public static int TimesTwo(int input)
         {
             var result = input * 2;
             return result;
         }
-        
-        public static int multiplyByTwo(int input)
+
+        public static int MultiplyByTwo(int input)
         {
             var result = input * 2;
             return result;

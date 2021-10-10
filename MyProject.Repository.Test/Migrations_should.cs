@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using MyProject.Repository.Data;
 using MyProject.Repository.Test.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Xunit;
 using Xunit.Sdk;
 
@@ -16,16 +16,16 @@ namespace MyProject.Repository.Test
     public class Migrations_should
     {
         [SkipDbMigrationIntegrationTheory]
-        [shouldRollbackTestData]
-        public void shouldRollback(KeyValuePair<string, AppSettings> appSettings)
+        [ShouldRollbackTestData]
+        public void ShouldRollback(KeyValuePair<string, AppSettings> appSettings)
         {
-            var success = false;
             var assertMsg = "";
+            bool success;
             try
             {
                 // don't use the same database as the main tests.
-                appSettings.Value.connectionStrings.DefaultConnection = appSettings.Value.connectionStrings.DefaultConnection.Replace("mockDb", "rollback_mockDb");
-                var context = new TestDbContext(appSettings.Value.connectionStrings, seedData: false);
+                appSettings.Value.ConnectionStrings.DefaultConnection = appSettings.Value.ConnectionStrings.DefaultConnection.Replace("mockDb", "rollback_mockDb");
+                var context = new TestDbContext(appSettings.Value.ConnectionStrings, seedData: false);
                 context.ValidSetup();
                 var migrations = context.dbContext.Database.GetPendingMigrations();
                 Assert.True(migrations.Count() == 0);
@@ -38,7 +38,7 @@ namespace MyProject.Repository.Test
             }
             catch (System.Exception e)
             {
-                assertMsg = "Failed for " + appSettings.Value.connectionStrings.Provider + "\n" +
+                assertMsg = "Failed for " + appSettings.Value.ConnectionStrings.Provider + "\n" +
                     e.Message;
                 Console.WriteLine(assertMsg);
                 success = false;
@@ -54,7 +54,7 @@ namespace MyProject.Repository.Test
             var skipReason = DataLoader.DataExists<AppSettings>("");
             if (skipReason == true.ToString())
             {
-                var array = DataLoader.loadJsonDictonary<AppSettings>("");
+                var array = DataLoader.LoadJsonDictonary<AppSettings>("");
                 // skip mssql in gitlab
                 skipReason = (!(array.Count == 1 && array.ContainsKey("mssql"))).ToString();
                 if (skipReason != true.ToString())
@@ -104,13 +104,13 @@ namespace MyProject.Repository.Test
         }
     }
 
-    public class shouldRollbackTestData : DataAttribute
+    public class ShouldRollbackTestData : DataAttribute
     {
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             if (DataLoader.DataExists<AppSettings>("") == true.ToString())
             {
-                var array = DataLoader.loadJsonDictonary<AppSettings>("");
+                var array = DataLoader.LoadJsonDictonary<AppSettings>("");
                 foreach (var appSettings in array)
                 {
                     yield return new object[] {
@@ -133,7 +133,7 @@ namespace MyProject.Repository.Test
         {
             if (DataLoader.DataExists<AppSettings>("") == true.ToString())
             {
-                var array = DataLoader.loadJsonDictonary<AppSettings>("");
+                var array = DataLoader.LoadJsonDictonary<AppSettings>("");
                 array.Remove("mssql");
                 if (array.Count > 0)
                     foreach (var appSettings in array)

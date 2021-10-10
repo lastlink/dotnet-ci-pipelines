@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using MyProject.Repository.Utils;
+using System;
 
 namespace MyProject.Repository.Migrations
 {
@@ -8,7 +8,7 @@ namespace MyProject.Repository.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var dbKeys = DatabaseTools.getDatabaseDefaults(migrationBuilder.ActiveProvider);
+            var dbKeys = DatabaseTools.GetDatabaseDefaults(migrationBuilder.ActiveProvider);
 
             migrationBuilder.CreateTable(
                 name: "Blog",

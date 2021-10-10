@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using MyProject.Repository.Data;
 using MyProject.Repository.Data.Models;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MyProject.Repository.Test.Helper
@@ -13,18 +13,19 @@ namespace MyProject.Repository.Test.Helper
     {
         public RepositoryTestCache()
         {
-            var appSettignsDict = DataLoader.loadJsonDictonary<AppSettings>("");
-            dbContexts = new Dictionary<string, TestDbContext>();
+            var appSettignsDict = DataLoader.LoadJsonDictonary<AppSettings>("");
+            DbContexts = new Dictionary<string, TestDbContext>();
+            DefaultDate = (DateTime.Parse("2020/09/25")).RemoveTime();
             foreach (var appSettings in appSettignsDict)
             {
                 try
                 {
-                    var context = new TestDbContext(appSettings.Value.connectionStrings);
-                    dbContexts.Add(appSettings.Key, context);
+                    var context = new TestDbContext(appSettings.Value.ConnectionStrings);
+                    DbContexts.Add(appSettings.Key, context);
                 }
                 catch (System.Exception e)
                 {
-                    var assertMsg = "Failed for " + appSettings.Value.connectionStrings.Provider + "\n" +
+                    var assertMsg = "Failed for " + appSettings.Value.ConnectionStrings.Provider + "\n" +
                      e.Message;
                     Console.WriteLine(assertMsg);
                     // dbContexts.Add(appSettings.Key, null);
@@ -32,7 +33,9 @@ namespace MyProject.Repository.Test.Helper
             }
         }
 
-        public Dictionary<string, TestDbContext> dbContexts { get; }
+        public DateTime DefaultDate { get; set; }
+
+        public Dictionary<string, TestDbContext> DbContexts { get; }
 
         public void Dispose()
         {
@@ -54,9 +57,9 @@ namespace MyProject.Repository.Test.Helper
             Assert.True(string.IsNullOrWhiteSpace(_exceptionMessage), _exceptionMessage);
         }
 
-        private class _tmpContext : DbContext
+        private class TmpContext : DbContext
         {
-            public _tmpContext(DbContextOptions<_tmpContext> options)
+            public TmpContext(DbContextOptions<TmpContext> options)
           : base(options)
             {
                 // this.Configuration.ValidateOnSaveEnabled = false;
@@ -65,7 +68,7 @@ namespace MyProject.Repository.Test.Helper
 
 
 
-        private void cleanupBlogs(List<Blog> blogs)
+        private void CleanupBlogs(List<Blog> blogs)
         {
             var count = 0;
             foreach (var blog in blogs)
@@ -96,7 +99,7 @@ namespace MyProject.Repository.Test.Helper
                 blogs.Add(b);
             }
             // var blogs = DataLoader.loadJsonArray<Blog>("../../MyProject.Repository.Test/Data/Repository/");
-            cleanupBlogs(blogs);
+            CleanupBlogs(blogs);
             try
             {
                 dbContext.Blog.AddRange(blogs);
@@ -155,9 +158,9 @@ namespace MyProject.Repository.Test.Helper
                 dbContext.Database.EnsureDeleted();
                 if (databaseProvider.ToLower().Trim().Equals("mysql"))
                 {
-                    var tmpOptionsBuilder = new DbContextOptionsBuilder<_tmpContext>();
+                    var tmpOptionsBuilder = new DbContextOptionsBuilder<TmpContext>();
                     tmpOptionsBuilder.UseMySQL(connectionString);
-                    var tmpContext = new _tmpContext(tmpOptionsBuilder.Options);
+                    var tmpContext = new TmpContext(tmpOptionsBuilder.Options);
                     // need to create w/out migrations
                     tmpContext.Database.EnsureCreated();
                     dbContext.Database.ExecuteSqlCommand(@"
