@@ -3,7 +3,7 @@ namespace MyProject.Repository.Data
     public class AppSettings
     {
 
-        public ConnectionStrings connectionStrings { get; set; }
+        public ConnectionStrings ConnectionStrings { get; set; }
     }
     public class ConnectionStrings
     {

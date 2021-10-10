@@ -15,7 +15,7 @@ namespace MyProject.Repository.Utils
             public bool UpdateDateTrigger = true;
             public string ProviderName { get; set; }
         }
-        public static string getDefaultDate(string databaseProvider)
+        public static string GetDefaultDate(string databaseProvider)
         {
             string DEFAULTDATE = "(getdate())";
 
@@ -63,11 +63,11 @@ namespace MyProject.Repository.Utils
         /// <param name="schema"></param>
         /// <param name="id_column"></param>
         /// <returns></returns>
-        public static string getUpdateDateTrigger(string databaseProvider, string name, string table, string column, string schema = "", string id_column = "id")
+        public static string GetUpdateDateTrigger(string databaseProvider, string name, string table, string column, string schema = "", string id_column = "id")
         {
             string updateDateTrigger = null;
             if (!string.IsNullOrEmpty(schema))
-                schema = schema + ".";
+                schema += ".";
             switch (databaseProvider)
             {
                 case "sqlite":
@@ -121,10 +121,12 @@ namespace MyProject.Repository.Utils
         /// </summary>
         /// <param name="databaseProvider"></param>
         /// <returns></returns>
-        public static DatabaseKeys getDatabaseDefaults(string databaseProvider)
+        public static DatabaseKeys GetDatabaseDefaults(string databaseProvider)
         {
-            var dbKeys = new DatabaseKeys();
-            dbKeys.dateTime = "datetime";
+            var dbKeys = new DatabaseKeys
+            {
+                dateTime = "datetime"
+            };
 
             switch (databaseProvider)
             {

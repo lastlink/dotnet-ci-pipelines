@@ -11,7 +11,7 @@ namespace MyProject.Test.Complexity
         {
             const int number = 2;
 
-            Assert.AreEqual(Duplication.multiplyByTwo(number), 4);
+            Assert.AreEqual(Duplication.MultiplyByTwo(number), 4);
         }
     }
 }
