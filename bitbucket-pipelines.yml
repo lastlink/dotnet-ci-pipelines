@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: mcr.microsoft.com/dotnet/core/sdk:2.2.301
+image: mcr.microsoft.com/dotnet/sdk:3.1
 
 definitions: 
   services: 
@@ -71,10 +71,11 @@ pipelines:
               script:
                 # - ignore failure
                 # - set +e
+                - sleep 10
                 - dotnet restore --packages="$NUGET_PACKAGES_DIRECTORY"
                 - cd MyProject.Repository.Test
                 - cp ./Data/appSettings.bitbucket.mssql.json ./Data/AppSettings.json
-                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'|| true
+                - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/' || true
                 - mv TestResults test-results
                 # Enable exit on non 0
                 # - set -e
