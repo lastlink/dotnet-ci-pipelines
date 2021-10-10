@@ -26,8 +26,8 @@
 #endregion
 
 #region Namespaces
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 #endregion
 
 namespace MyProject.Test

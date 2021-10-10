@@ -1,13 +1,13 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace MyProject.Repository.Test.Helper
 {
     public class DataLoader
     {
-        public static Dictionary<string, t> loadJsonDictonary<t>(string path, string testData = "")
+        public static Dictionary<string, t> LoadJsonDictonary<t>(string path, string testData = "")
         {
             var dataDir = Directory.GetCurrentDirectory() + rootPath;
             if (string.IsNullOrWhiteSpace(testData))
@@ -33,7 +33,7 @@ namespace MyProject.Repository.Test.Helper
         /// initialize a json list, helper method to create mock data quickly
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static void initJson<T>(List<T> data = null, string path = "Repository/", string testData = "") where T : class, new()
+        public static void InitJson<T>(List<T> data = null, string path = "Repository/", string testData = "") where T : class, new()
         {
             var dataDir = Directory.GetCurrentDirectory() + rootPath;
             if (string.IsNullOrWhiteSpace(testData))
@@ -60,7 +60,7 @@ namespace MyProject.Repository.Test.Helper
             }
         }
 
-        private const string rootPath = "/../../../Data/";
+        public const string rootPath = "/../../../Data/";
 
         /// <summary>
         /// used for skipped tests
@@ -94,7 +94,7 @@ namespace MyProject.Repository.Test.Helper
         /// <param name="testData"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> loadJsonArray<T>(string path = "Repository/", string testData = "") where T : class, new()
+        public static List<T> LoadJsonArray<T>(string path = "Repository/", string testData = "") where T : class, new()
         {
             var dataDir = Directory.GetCurrentDirectory() + rootPath;
             if (string.IsNullOrWhiteSpace(testData))
@@ -112,7 +112,7 @@ namespace MyProject.Repository.Test.Helper
             else
             {
                 // auto create a default
-                initJson<T>(path: path, testData: testData);
+                InitJson<T>(path: path, testData: testData);
                 var msg = "File Data/" + path + testData + ".json doesn't exist";
                 Console.WriteLine(msg);
                 throw new System.Exception(msg);
