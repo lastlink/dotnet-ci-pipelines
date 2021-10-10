@@ -8,7 +8,7 @@ namespace MyProject.Repository.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var dbKeys = DatabaseTools.getDatabaseDefaults(migrationBuilder.ActiveProvider);
+            var dbKeys = DatabaseTools.GetDatabaseDefaults(migrationBuilder.ActiveProvider);
 
             migrationBuilder.CreateTable(
                 name: "Blog",

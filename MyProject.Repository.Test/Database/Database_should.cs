@@ -22,8 +22,8 @@ namespace MyProject.Repository.Test.Database
         {
             // get db and run initial migrations
             // DbContexts = fixture.DbContexts;
-            // DefaultDate = fixture.DefaultDate;
-            DbContexts = fixture.dbContexts;
+            DefaultDate = fixture.DefaultDate;
+            DbContexts = fixture.DbContexts;
             //DefaultJournalDate = (DateTime.Parse("2020/09/28")).RemoveTime();
         }
 
@@ -46,7 +46,7 @@ namespace MyProject.Repository.Test.Database
         {
             DbContexts[appSettings.Key].ValidSetup();
             var testData = "Accounts";
-            var expectedResult = DataLoader.loadJsonArray<Blog>(IntegratedUtils.DatabaseTestDataPath, testData);
+            var expectedResult = DataLoader.LoadJsonArray<Blog>(IntegratedUtils.DatabaseTestDataPath, testData);
 
             // get data from db
             var result = DbContexts[appSettings.Key].dbContext.Blog
@@ -83,7 +83,11 @@ namespace MyProject.Repository.Test.Database
 
         private void CleanupBlogss(List<Blog> result)
         {
-            // throw new NotImplementedException();
+            foreach (var blog in result)
+            {
+                if (blog.UpdatedAt.HasValue)
+                    blog.UpdatedAt = DefaultDate;
+            }
         }
     }
 }
