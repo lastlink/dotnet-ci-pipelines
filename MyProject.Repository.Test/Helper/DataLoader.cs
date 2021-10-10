@@ -60,7 +60,7 @@ namespace MyProject.Repository.Test.Helper
             }
         }
 
-        private const string rootPath = "/../../../Data/";
+        public const string rootPath = "/../../../Data/";
 
         /// <summary>
         /// used for skipped tests
