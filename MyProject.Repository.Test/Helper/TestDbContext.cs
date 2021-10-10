@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using MyProject.Repository.Data;
 using MyProject.Repository.Data.Models;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MyProject.Repository.Test.Helper
