@@ -77,12 +77,20 @@ jobs:
       inputs:
         command: 'test'
         publishTestResults: true
-        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --collect:"XPlat Code Coverage" --no-build'
+
+    - task: reportgenerator@4
+      displayName: 'Merge code coverage reports'
+      inputs:
+        reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        targetdir: '$(Pipeline.Workspace)/coverlet'
+        reporttypes: 'Cobertura'
+        verbosity: 'Verbose'
 
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '**/*coverage.cobertura.xml'
+        summaryFileLocation: '$(Pipeline.Workspace)/coverlet/Cobertura.xml'
 
     - task: VSBuild@1
       inputs:
