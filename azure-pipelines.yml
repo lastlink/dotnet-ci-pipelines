@@ -77,7 +77,7 @@ jobs:
       inputs:
         command: 'test'
         publishTestResults: true
-        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
 
     - task: PublishCodeCoverageResults@1
       inputs:
