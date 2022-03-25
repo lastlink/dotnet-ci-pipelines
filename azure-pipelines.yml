@@ -76,12 +76,13 @@ jobs:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
-        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
+        publishTestResults: true
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
+        summaryFileLocation: '**/*coverage.cobertura.xml'
 
     - task: VSBuild@1
       inputs:
