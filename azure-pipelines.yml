@@ -83,7 +83,7 @@ jobs:
       inputs:
         script: |
           dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-          ./tools/reportgenerator "-reports:**/TestResults/coverage.cobertura.xml;" "-targetdir:coverlet" -reporttypes:Cobertura
+          $(Pipeline.Workspace)/tools/reportgenerator "-reports:**/TestResults/coverage.cobertura.xml;" "-targetdir:coverlet" -reporttypes:Cobertura
 
     - task: PublishCodeCoverageResults@1
       inputs:
