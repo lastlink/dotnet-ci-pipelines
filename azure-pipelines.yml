@@ -83,12 +83,11 @@ jobs:
       inputs:
         script: |
           dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
-          $(Pipeline.Workspace)/tools/reportgenerator "-reports:**/TestResults/coverage.cobertura.xml;" "-targetdir:coverlet" -reporttypes:Cobertura
-
+          .\tools\reportgenerator "-reports:**\TestResults\coverage.cobertura.xml;" "-targetdir:coverlet" -reporttypes:Cobertura
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Pipeline.Workspace)/coverlet/Cobertura.xml'
+        summaryFileLocation: 'coverlet\Cobertura.xml'
 
     - task: VSBuild@1
       inputs:
