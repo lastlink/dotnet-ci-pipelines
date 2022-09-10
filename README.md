@@ -29,7 +29,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
   * [] obfuscators
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
-* [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images
+* [limits](https://www.atlassian.com/software/bitbucket/pricing?tab=cloud-tab) 50 minutes per month, support docker images. $10 per 1000 minutes.
 * [ ] Badges
 * [x] api docs - docfx html only
 * [x]  Tests - working display
