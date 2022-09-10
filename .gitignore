@@ -232,3 +232,5 @@ wkhtmltox
 appsettings.json
 launchSettings.json
 *.db
+coverage.*.xml
+coverlet
