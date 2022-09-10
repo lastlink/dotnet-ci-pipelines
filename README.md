@@ -79,8 +79,8 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] artifacts
 
 ### [Google Source Repository](https://source.cloud.google.com/onboarding/welcome)
-* [pricing](https://cloud.google.com/source-repositories/pricing#pricing) free up to 5 users. [limits](https://cloud.google.com/build/pricing) first 120 minutes a day free. $30 per 1000 priced per minute. 
-* [] Tests - Junit TODO
+* [pricing](https://cloud.google.com/source-repositories/pricing#pricing) free up to 5 users. Cloud Build [limits](https://cloud.google.com/build/pricing) first 120 minutes a day free. $30 per 1000 priced per minute. 
+* used solely for pushing docker builds to a registry and deploying. While in theory you could run unit tests in a docker image it is recommended to use an alternative for unit tests
 
 ## Other
 
