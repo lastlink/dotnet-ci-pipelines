@@ -172,10 +172,10 @@ jobs:
     inputs:
       script: 'docker ps -all'
   - task: CmdLine@2
-  displayName: 'Run sqlcmd'
-  inputs:
-    script: |
-      /opt/mssql-tools/bin/sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@VERSION;"
+    displayName: 'Run sqlcmd'
+    inputs:
+      script: |
+        /opt/mssql-tools/bin/sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@VERSION;"
   # - task: CmdLine@2
   #   displayName: 'sqlcmd'
   #   inputs:
