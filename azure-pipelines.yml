@@ -86,10 +86,6 @@ jobs:
         script: |
           dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
           .\tools\reportgenerator "-reports:**\TestResults\coverage.cobertura.xml;" "-targetdir:coverlet" -reporttypes:Cobertura
-    # - task: PublishCodeCoverageResults@1
-    #   inputs:
-    #     codeCoverageTool: 'Cobertura'
-    #     summaryFileLocation: 'coverlet\Cobertura.xml'
 
     - task: PublishCodeCoverageResults@2
       displayName: 'Publish code coverage'
@@ -133,22 +129,6 @@ jobs:
     displayName: 'docker logs'
     inputs:
       script: 'docker logs mssql'
-  # - task: CmdLine@2
-  #   displayName: 'Run sqlcmd in container'
-  #   inputs:
-  #     script: |
-  #       docker run --rm mcr.microsoft.com/mssql-tools \
-  #         sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@VERSION;"
-
-  # - task: Bash@3
-  #   displayName: 'Install sqlcmd on Ubuntu 24.04'
-  #   inputs:
-  #     targetType: 'inline'
-  #     script: |
-  #       sudo apt update
-  #       sudo ACCEPT_EULA=Y apt install -y mssql-tools
-  #       echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
-  #       source ~/.bashrc
 
   - task: CmdLine@2
     displayName: 'Install sqlcmd'
@@ -162,11 +142,11 @@ jobs:
         echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
         source ~/.bashrc
 
-  # - task: CmdLine@2
-  #   displayName: 'npm install'
-  #   inputs:
-  #     script: 'npm install mssql'
-  #     workingDirectory: '$(build.sourcesdirectory)'
+  - task: CmdLine@2
+    displayName: 'npm install'
+    inputs:
+      script: 'npm install mssql'
+      workingDirectory: '$(build.sourcesdirectory)'
   - task: CmdLine@2
     displayName: 'docker list'
     inputs:
@@ -176,10 +156,6 @@ jobs:
     inputs:
       script: |
         /opt/mssql-tools/bin/sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@VERSION;"
-  # - task: CmdLine@2
-  #   displayName: 'sqlcmd'
-  #   inputs:
-  #     script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
 
 - job: unit_test_db_mssql
   # condition: eq('${{ variables.runDbTests }}', 'true')
