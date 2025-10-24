@@ -93,6 +93,7 @@ namespace MyProject.Repository.Test.Helper
             {
                 var b = new Blog()
                 {
+                    Id = i,
                     Title = "test blog" + i,
                     Content = "some content" + i
                 };
@@ -143,7 +144,8 @@ namespace MyProject.Repository.Test.Helper
                 }
                 else if (databaseProvider.ToLower().Trim().Equals("mysql"))
                 {
-                    optionsBuilder.UseMySQL(connectionString);
+                    optionsBuilder.UseMySql(
+                        connectionString, ServerVersion.AutoDetect(connectionString));
                 }
                 else if (databaseProvider.ToLower().Trim().Equals("postgress"))
                 {
@@ -159,11 +161,12 @@ namespace MyProject.Repository.Test.Helper
                 if (databaseProvider.ToLower().Trim().Equals("mysql"))
                 {
                     var tmpOptionsBuilder = new DbContextOptionsBuilder<TmpContext>();
-                    tmpOptionsBuilder.UseMySQL(connectionString);
+                    tmpOptionsBuilder.UseMySql(
+                        connectionString, ServerVersion.AutoDetect(connectionString));
                     var tmpContext = new TmpContext(tmpOptionsBuilder.Options);
                     // need to create w/out migrations
                     tmpContext.Database.EnsureCreated();
-                    dbContext.Database.ExecuteSqlCommand(@"
+                    dbContext.Database.ExecuteSqlRaw(@"
                 CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
                 `MigrationId` VARCHAR(150) NOT NULL,
                 `ProductVersion` VARCHAR(32) NOT NULL,

@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <Obfuscator>
-  <Var name="InPath" value="./MyProject.Api/bin/Release/netcoreapp3.1/publish" />
+  <Var name="InPath" value="./MyProject.Api/bin/Release/net9.0/publish" />
   <!-- <Var name="OutPath" value="$(InPath)" /> -->
   <Var name="OutPath" value="$(InPath)/ReadyForDeployment" />
   <Var name="KeepPublicApi" value="true" />

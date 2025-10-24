@@ -10,5 +10,5 @@ then
 fi
 echo ${TargetName}
 cp ../Release/pre/${TargetName}.dll ./obj/${TargetName}.dll
-cp ../Release/pre/MyProject.Repository.dll ../MyProject.Repository/bin/Release/netcoreapp3.1/${rId}/MyProject.Repository.dll
+cp ../Release/pre/MyProject.Repository.dll ../MyProject.Repository/bin/Release/net9.0/${rId}/MyProject.Repository.dll
 echo ":::end post build:::"
