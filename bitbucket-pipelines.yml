@@ -13,7 +13,7 @@ definitions:
         MYSQL_DATABASE: "mockDb"
         MYSQL_ROOT_PASSWORD: "mysecretpw"
     pg-server: 
-      image: postgres:lastest
+      image: postgres:latest
       variables:
         POSTGRES_DB: mockDb
         POSTGRES_USER: postgres
