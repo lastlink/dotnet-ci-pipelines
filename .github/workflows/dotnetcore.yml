@@ -1,5 +1,10 @@
 name: .NET Core
 
+# Cancel in-progress workflows when a new workflow is created. Should only apply to PRs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 # use https://marketplace.visualstudio.com/items?itemName=me-dutour-mathieu.vscode-github-actions to validate yml in vscode
 env:
   NUGET_PACKAGES_DIRECTORY: '.nupkg'
