@@ -6,6 +6,6 @@ mkdir -p ${folder}
 
 ./tools/obfuscar.console ./scripts/obfuscator/unix/obfuscar-console.xml
 
-cp MyProject/bin/Release/netcoreapp3.1/publish/ReadyForDeployment/MyProject.dll ${folder}
-# cp MyProject.Api/bin/Release/netcoreapp3.1/publish/ReadyForDeployment/MyProject.Api.dll ${folder}
-# cp MyProject.Repository/bin/Release/netcoreapp3.1/ReadyForDeployment/MyProject.Repository.dll ${folder}
+cp MyProject/bin/Release/net9.0/publish/ReadyForDeployment/MyProject.dll ${folder}
+# cp MyProject.Api/bin/Release/net9.0/publish/ReadyForDeployment/MyProject.Api.dll ${folder}
+# cp MyProject.Repository/bin/Release/net9.0/ReadyForDeployment/MyProject.Repository.dll ${folder}
