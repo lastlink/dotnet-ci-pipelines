@@ -11,7 +11,7 @@
 # https://gitlab.com/tobiaskoch/gitlab-ci-example-dotnetcore
 
 # see https://hub.docker.com/r/microsoft/dotnet/
-image: mcr.microsoft.com/dotnet/sdk:3.1
+image: mcr.microsoft.com/dotnet/sdk:9.0
 
 variables:
  NUGET_PACKAGES_DIRECTORY: '.nupkg'
@@ -124,7 +124,7 @@ unit_test_db_postgres:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
       when: always
   services:
-    - name: postgres:12.2-alpine
+    - name: postgres:latest
       alias: localhost_postgres
   # rules:
     # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
