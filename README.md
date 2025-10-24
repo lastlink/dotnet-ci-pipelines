@@ -13,7 +13,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [Gitlab pipelines](#--gitlab--------)
 * [Other notes](#other)
 
-### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/workflows/.net%20core/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions)
+### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions/workflows/dotnetcore.yml)
 
 * [limits](https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions) 2,000 (per month) to 20 concurrent jobs support windows, ubuntu, mac
     * doesn't currently support retry and max timeout although will cancel when limit reached.
@@ -43,7 +43,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
   * mssql starts up, gives lots of details on docker image running, not enough detail for why test was failing
 
 ### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master)
-* [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects
+* [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects. $40 a month for unlimited minutes.
 * [ ] Badges?
   * [x] build
 * [x] api docs - docfx html only (pdf works locally, maybe self hosted runner)
@@ -56,7 +56,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
   * really want mssql to work for ease w/ some integrated testing and pre deploy checks. tracking progress in [stackoverflow](https://stackoverflow.com/questions/63538477/how-do-i-get-mssql-service-container-working-in-azure-devops-pipeline) and [developercommunity.visualstudio.com](https://developercommunity.visualstudio.com/content/problem/1159426/working-examples-using-service-container-of-sql-se.html)
 
 ### [ ] [Gitlab](https://gitlab.com/lastlink/dotnet-ci-pipelines) [![pipeline status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/pipeline.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master)  [![coverage status](https://gitlab.com/lastlink/dotnet-ci-pipelines/badges/master/coverage.svg)](https://gitlab.com/lastlink/dotnet-ci-pipelines/commits/master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=alert_status)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=code_smells)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=sqale_index)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=coverage)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=lastlink_dotnet-ci-pipelines&metric=ncloc)](https://sonarcloud.io/dashboard?id=lastlink_dotnet-ci-pipelines)
-* [limits](https://about.gitlab.com/pricing/) 2,000 minutes per month per group or user
+* [limits](https://about.gitlab.com/pricing/) 400 ~~2,000~~ minutes per month per group or user. $10 to buy 1,000 extra minutes expires end of year.
 * [ ] Badges
     * [x] pipeline
     * [ ] coverage
@@ -77,6 +77,10 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
         * [x] dupfinder 1min
     * [x] CodeClimate (complexity & duplication) 10min+ 
 * [x] artifacts
+
+### [Google Source Repository](https://source.cloud.google.com/onboarding/welcome)
+* [pricing](https://cloud.google.com/source-repositories/pricing#pricing) free up to 5 users. Cloud Build [limits](https://cloud.google.com/build/pricing) first 120 minutes a day free. $30 per 1000 priced per minute. 
+* used solely for pushing docker builds to a registry and deploying. While in theory you could run unit tests in a docker image it is recommended to use an alternative for unit tests
 
 ## Other
 
