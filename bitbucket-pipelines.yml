@@ -12,7 +12,7 @@ definitions:
       variables:
         MYSQL_DATABASE: "mockDb"
         MYSQL_ROOT_PASSWORD: "mysecretpw"
-    pg_server: 
+    pg-server: 
       image: postgres:lastest
       variables:
         POSTGRES_DB: mockDb
@@ -90,7 +90,7 @@ pipelines:
                 - dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='./TestResults/'
                 - mv TestResults test-results
               services: 
-                - pg_server
+                - pg-server
       - step:
           name: Resharper cli
           script:
