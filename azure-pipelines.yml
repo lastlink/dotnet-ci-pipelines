@@ -141,14 +141,14 @@ jobs:
   #         sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@VERSION;"
 
   - task: Bash@3
-  displayName: 'Install sqlcmd on Ubuntu 24.04'
-  inputs:
-    targetType: 'inline'
-    script: |
-      sudo apt update
-      sudo ACCEPT_EULA=Y apt install -y mssql-tools
-      echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
-      source ~/.bashrc
+    displayName: 'Install sqlcmd on Ubuntu 24.04'
+    inputs:
+      targetType: 'inline'
+      script: |
+        sudo apt update
+        sudo ACCEPT_EULA=Y apt install -y mssql-tools
+        echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+        source ~/.bashrc
 
   # - task: CmdLine@2
   #   displayName: 'Install sqlcmd'
