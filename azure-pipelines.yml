@@ -38,8 +38,8 @@ resources:
       - 3306:3306
     options: -e MYSQL_ROOT_PASSWORD=mysecretpw
 
-  - container: pg11
-    image: postgres:11
+  - container: postgres_server
+    image: postgres:latest
     ports: 
       - 5432:5432
     options: -e POSTGRES_PASSWORD=mysecretpassword
@@ -75,6 +75,7 @@ jobs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.gitlab.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
+      displayName: 'test'
       inputs:
         command: 'test'
         publishTestResults: true
@@ -124,12 +125,12 @@ jobs:
     displayName: 'docker logs'
     inputs:
       script: 'docker logs mssql'
-  - task: CmdLine@2
-    displayName: 'Run sqlcmd in container'
-    inputs:
-      script: |
-        docker run --rm mcr.microsoft.com/mssql-tools \
-          sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@VERSION;"
+  # - task: CmdLine@2
+  #   displayName: 'Run sqlcmd in container'
+  #   inputs:
+  #     script: |
+  #       docker run --rm mcr.microsoft.com/mssql-tools \
+  #         sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@VERSION;"
   - task: CmdLine@2
     displayName: 'Install sqlcmd'
     inputs:
@@ -213,7 +214,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   services:
-    localhost_postgres: postgres:latest
+    localhost_postgres: postgres_server
   steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 9.0'
@@ -240,6 +241,7 @@ jobs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.postgres.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
+      displayName: 'database tests'
       inputs:
         command: 'test'
         workingDirectory: MyProject.Repository.Test
@@ -277,6 +279,7 @@ jobs:
         script: |
           cp ./MyProject.Repository.Test/Data/appSettings.devops.mysql.json ./MyProject.Repository.Test/Data/AppSettings.json
     - task: DotNetCoreCLI@2
+      displayName: 'database tests'
       inputs:
         command: 'test'
         workingDirectory: MyProject.Repository.Test
