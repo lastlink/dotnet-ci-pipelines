@@ -84,7 +84,7 @@ jobs:
       with:
         name: Release_unix
         path: Release/post
-          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
+        retention-days: ${{ env.VERSION_RETENTION_DAYS }}
 
   build-win:
     runs-on: windows-latest
