@@ -64,12 +64,11 @@ jobs:
         packageType: sdk
         version: 9.x
         installationPath: $(Agent.ToolsDirectory)/dotnet
-    - task: NuGetToolInstaller@1
-    # Authenticate with NuGet to ensure credentials are refreshed
-    - task: NuGetAuthenticate@1
-    - task: NuGetCommand@2
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore (solution)'
       inputs:
-        restoreSolution: '$(solution)'
+        command: 'restore'
+        projects: '$(solution)'
     - task: CmdLine@2
       displayName: 'enablesqlite'
       inputs:
@@ -172,12 +171,11 @@ jobs:
         packageType: sdk
         version: 9.x
         installationPath: $(Agent.ToolsDirectory)/dotnet
-    - task: NuGetToolInstaller@1
-    # Authenticate with NuGet to ensure credentials are refreshed
-    - task: NuGetAuthenticate@1
-    - task: NuGetCommand@2
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore (solution)'
       inputs:
-        restoreSolution: '$(solution)'
+        command: 'restore'
+        projects: '$(solution)'
     - task: Bash@3
       inputs:
         targetType: 'inline'
@@ -223,12 +221,11 @@ jobs:
         packageType: sdk
         version: 9.x
         installationPath: $(Agent.ToolsDirectory)/dotnet
-    - task: NuGetToolInstaller@1
-    # Authenticate with NuGet to ensure credentials are refreshed
-    - task: NuGetAuthenticate@1
-    - task: NuGetCommand@2
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore (solution)'
       inputs:
-        restoreSolution: '$(solution)'
+        command: 'restore'
+        projects: '$(solution)'
     - task: Bash@3
       inputs:
         targetType: 'inline'
@@ -261,12 +258,11 @@ jobs:
         packageType: sdk
         version: 9.x
         installationPath: $(Agent.ToolsDirectory)/dotnet
-    - task: NuGetToolInstaller@1
-    # Authenticate with NuGet to ensure credentials are refreshed
-    - task: NuGetAuthenticate@1
-    - task: NuGetCommand@2
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore (solution)'
       inputs:
-        restoreSolution: '$(solution)'
+        command: 'restore'
+        projects: '$(solution)'
     - task: Bash@3
       inputs:
         targetType: 'inline'
