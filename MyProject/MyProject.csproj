@@ -11,13 +11,13 @@
     <Company>Example LLC</Company>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(ConfigurationName) == Release AND $(rId) != ''">
+  <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(ConfigurationName) == Release AND $(rId) != ''">
     <Exec Condition="$(OS) == Windows_NT" Command="set TargetName=$(TargetName)&#xD;&#xA;set rId=$(rId)&#xD;&#xA;set TargetDir=$(TargetDir)&#xD;&#xA;..\scripts\build.cmd" />
     <Exec Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' OR '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'" Command="export TargetName=$(TargetName)&#xD;&#xA;export rId=$(rId)&#xD;&#xA;export TargetDir=$(TargetDir)&#xD;&#xA;bash ../scripts/build.sh" />
   </Target>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(ConfigurationName) == Release">
     <Exec Condition="$(OS) == Windows_NT" Command="set TargetDir=$(TargetDir)&#xD;&#xA;..\scripts\clean.cmd" />
     <Exec Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' OR '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))'" Command="bash ../scripts/clean.sh" />
-  </Target>
+  </Target> -->
 
 </Project>
