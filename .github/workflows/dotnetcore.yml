@@ -19,6 +19,10 @@ on:
     branches:
       - master
 
+# Configurable retention days for artifacts
+env:
+  BUNDLE_RETENTION_DAYS: 7
+
 jobs:
   build:
 
@@ -46,10 +50,11 @@ jobs:
         ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
         ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
         cat ./Reports/Summary.txt
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       with:
           name: CodeCoverage
           path: Reports
+          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
     - name: Resharper Code Quality
       run: |
         # apt update && apt install -y curl zip unzip
@@ -59,10 +64,11 @@ jobs:
         files=(*.sln)
         sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
         sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       with:
           name: CodeQuality
           path: CodeQuality
+          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
     - name: prerelease
       if: ${{ env.rIds }} != ''
       run: |
@@ -73,11 +79,12 @@ jobs:
         bash ./scripts/pipeline.sh
         bash ./scripts/finalRelease.sh
     - name: upload release
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       if: ${{ env.rIds }} != ''
       with:
         name: Release_unix
         path: Release/post
+          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
 
   build-win:
     runs-on: windows-latest
@@ -105,11 +112,12 @@ jobs:
         .\scripts\pipeline.cmd
         .\scripts\finalRelease.cmd
     - name: upload release
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       if: ${{ env.rIds }} != ''
       with:
         name: Release_win
         path: Release\post
+        retention-days: ${{ env.VERSION_RETENTION_DAYS }}
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
@@ -213,10 +221,11 @@ jobs:
           curl -LO "https://github.com/dotnet/docfx/releases/download/v2.48/docfx.zip"
           powershell.exe -NoP -NonI -Command "Expand-Archive '.\docfx.zip' '.\docfx\'" 
           ./docfx/docfx.exe
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: CodeDocs
           path: _site
+          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
 
   security:
     runs-on: ubuntu-latest
