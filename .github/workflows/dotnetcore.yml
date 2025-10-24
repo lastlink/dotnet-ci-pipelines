@@ -9,7 +9,7 @@ env:
   CONTAINER_IMAGE: codeclimate/codeclimate
   CONTAINER_TAG: '0.85.2'
   rIds: ${{ secrets.rIds }}
-  dotnetVersion: 3.1.102
+  dotnetVersion: '9.x'
 
 on:
   pull_request:
