@@ -72,7 +72,7 @@ namespace MyProject.Repository.Test.Database
                     dataErrorMessage += e.InnerException.Message;
                 else
                     dataErrorMessage += e.Message;
-                Assert.True(false, dataErrorMessage);
+                Assert.Fail(dataErrorMessage);
             }
 
 
