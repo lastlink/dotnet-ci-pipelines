@@ -76,12 +76,18 @@ jobs:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'test'
-        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
-
+        publishTestResults: true
+        arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --collect:"XPlat Code Coverage" /p:CoverletOutput="./TestResults/"'
+    - task: CmdLine@2
+      displayName: 'Merge Coverage'
+      inputs:
+        script: |
+          dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
+          .\tools\reportgenerator "-reports:**\TestResults\coverage.cobertura.xml;" "-targetdir:coverlet" -reporttypes:Cobertura
     - task: PublishCodeCoverageResults@1
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
+        summaryFileLocation: 'coverlet\Cobertura.xml'
 
     - task: VSBuild@1
       inputs:
@@ -182,11 +188,6 @@ jobs:
         workingDirectory: MyProject.Repository.Test
         arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
 
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
-
 - job: unit_test_db_postgres
   # condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
@@ -223,11 +224,6 @@ jobs:
         workingDirectory: MyProject.Repository.Test
         arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
 
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
-
 - job: unit_test_db_mysql
   # condition: eq('${{ variables.runDbTests }}', 'true')
   pool:
@@ -263,8 +259,3 @@ jobs:
         command: 'test'
         workingDirectory: MyProject.Repository.Test
         arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/"'
-
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/TestResults/coverage.opencover.xml'
