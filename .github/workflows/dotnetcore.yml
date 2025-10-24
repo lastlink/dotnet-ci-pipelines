@@ -71,22 +71,22 @@ jobs:
           name: CodeQuality
           path: CodeQuality
           retention-days: ${{ env.VERSION_RETENTION_DAYS }}
-    - name: prerelease
-      if: ${{ env.rIds }} != ''
-      run: |
-        echo 'build, obfuscate, and release'
-        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
-        bash scripts/extractRelease.sh
-        export rIds=${{ env.rIds }}
-        bash ./scripts/pipeline.sh
-        bash ./scripts/finalRelease.sh
-    - name: upload release
-      uses: actions/upload-artifact@v4
-      if: ${{ env.rIds }} != ''
-      with:
-        name: Release_unix
-        path: Release/post
-        retention-days: ${{ env.VERSION_RETENTION_DAYS }}
+    # - name: prerelease
+    #   if: ${{ env.rIds }} != ''
+    #   run: |
+    #     echo 'build, obfuscate, and release'
+    #     dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+    #     bash scripts/extractRelease.sh
+    #     export rIds=${{ env.rIds }}
+    #     bash ./scripts/pipeline.sh
+    #     bash ./scripts/finalRelease.sh
+    # - name: upload release
+    #   uses: actions/upload-artifact@v4
+    #   if: ${{ env.rIds }} != ''
+    #   with:
+    #     name: Release_unix
+    #     path: Release/post
+    #     retention-days: ${{ env.VERSION_RETENTION_DAYS }}
 
   build-win:
     runs-on: windows-latest
@@ -104,22 +104,22 @@ jobs:
       run: |
         copy MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
         dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='.\TestResults\'
-    - name: prerelease
-      if: ${{ env.rIds }} != ''
-      run: |
-        echo "build, obfuscate, and release"
-        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
-        .\scripts\extractRelease.cmd
-        set rIds=$env:rIds
-        .\scripts\pipeline.cmd
-        .\scripts\finalRelease.cmd
-    - name: upload release
-      uses: actions/upload-artifact@v4
-      if: ${{ env.rIds }} != ''
-      with:
-        name: Release_win
-        path: Release\post
-        retention-days: ${{ env.VERSION_RETENTION_DAYS }}
+    # - name: prerelease
+    #   if: ${{ env.rIds }} != ''
+    #   run: |
+    #     echo "build, obfuscate, and release"
+    #     dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+    #     .\scripts\extractRelease.cmd
+    #     set rIds=$env:rIds
+    #     .\scripts\pipeline.cmd
+    #     .\scripts\finalRelease.cmd
+    # - name: upload release
+    #   uses: actions/upload-artifact@v4
+    #   if: ${{ env.rIds }} != ''
+    #   with:
+    #     name: Release_win
+    #     path: Release\post
+    #     retention-days: ${{ env.VERSION_RETENTION_DAYS }}
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
