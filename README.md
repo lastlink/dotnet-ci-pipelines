@@ -13,7 +13,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [Gitlab pipelines](#--gitlab--------)
 * [Other notes](#other)
 
-### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/workflows/.net%20core/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions)
+### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions/workflows/dotnetcore.yml)
 
 * [limits](https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions) 2,000 (per month) to 20 concurrent jobs support windows, ubuntu, mac
     * doesn't currently support retry and max timeout although will cancel when limit reached.
@@ -42,7 +42,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [x] [Services](https://support.atlassian.com/bitbucket-cloud/docs/use-services-and-databases-in-bitbucket-pipelines/) mysql and postgres work
   * mssql starts up, gives lots of details on docker image running, not enough detail for why test was failing
 
-### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master)
+### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master) ![Coverage](https://img.shields.io/azure-devops/coverage/funktechno/dotnet%20ci%20pipelines/1)
 * [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects. $40 a month for unlimited minutes.
 * [ ] Badges?
   * [x] build
