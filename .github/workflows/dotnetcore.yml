@@ -1,5 +1,10 @@
 name: .NET Core
 
+# Cancel in-progress workflows when a new workflow is created. Should only apply to PRs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 # use https://marketplace.visualstudio.com/items?itemName=me-dutour-mathieu.vscode-github-actions to validate yml in vscode
 env:
   NUGET_PACKAGES_DIRECTORY: '.nupkg'
@@ -9,7 +14,8 @@ env:
   CONTAINER_IMAGE: codeclimate/codeclimate
   CONTAINER_TAG: '0.85.2'
   rIds: ${{ secrets.rIds }}
-  dotnetVersion: 3.1.102
+  dotnetVersion: '9.x'
+  BUNDLE_RETENTION_DAYS: 7
 
 on:
   pull_request:
@@ -46,10 +52,11 @@ jobs:
         ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Html;
         ./tools/reportgenerator "-reports:**/TestResults/coverage.opencover.xml;" "-targetdir:Reports" -reportTypes:Badges;
         cat ./Reports/Summary.txt
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       with:
           name: CodeCoverage
           path: Reports
+          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
     - name: Resharper Code Quality
       run: |
         # apt update && apt install -y curl zip unzip
@@ -59,25 +66,27 @@ jobs:
         files=(*.sln)
         sh ./resharper/dupfinder.sh "${files[0]}" --output=CodeQuality/dupfinderReport.html --format=Html
         sh ./resharper/inspectcode.sh "${files[0]}" --output=CodeQuality/inspectcodeReport.html --format=Html
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       with:
           name: CodeQuality
           path: CodeQuality
-    - name: prerelease
-      if: ${{ env.rIds }} != ''
-      run: |
-        echo 'build, obfuscate, and release'
-        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
-        bash scripts/extractRelease.sh
-        export rIds=${{ env.rIds }}
-        bash ./scripts/pipeline.sh
-        bash ./scripts/finalRelease.sh
-    - name: upload release
-      uses: actions/upload-artifact@v2
-      if: ${{ env.rIds }} != ''
-      with:
-        name: Release_unix
-        path: Release/post
+          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
+    # - name: prerelease
+    #   if: ${{ env.rIds }} != ''
+    #   run: |
+    #     echo 'build, obfuscate, and release'
+    #     dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+    #     bash scripts/extractRelease.sh
+    #     export rIds=${{ env.rIds }}
+    #     bash ./scripts/pipeline.sh
+    #     bash ./scripts/finalRelease.sh
+    # - name: upload release
+    #   uses: actions/upload-artifact@v4
+    #   if: ${{ env.rIds }} != ''
+    #   with:
+    #     name: Release_unix
+    #     path: Release/post
+    #     retention-days: ${{ env.VERSION_RETENTION_DAYS }}
 
   build-win:
     runs-on: windows-latest
@@ -95,21 +104,22 @@ jobs:
       run: |
         copy MyProject.Repository.Test/Data/appSettings.gitlab.json MyProject.Repository.Test/Data/AppSettings.json
         dotnet test --logger "junit" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput='.\TestResults\'
-    - name: prerelease
-      if: ${{ env.rIds }} != ''
-      run: |
-        echo "build, obfuscate, and release"
-        dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
-        .\scripts\extractRelease.cmd
-        set rIds=$env:rIds
-        .\scripts\pipeline.cmd
-        .\scripts\finalRelease.cmd
-    - name: upload release
-      uses: actions/upload-artifact@v2
-      if: ${{ env.rIds }} != ''
-      with:
-        name: Release_win
-        path: Release\post
+    # - name: prerelease
+    #   if: ${{ env.rIds }} != ''
+    #   run: |
+    #     echo "build, obfuscate, and release"
+    #     dotnet tool install Obfuscar.GlobalTool --tool-path tools --version 2.2.28
+    #     .\scripts\extractRelease.cmd
+    #     set rIds=$env:rIds
+    #     .\scripts\pipeline.cmd
+    #     .\scripts\finalRelease.cmd
+    # - name: upload release
+    #   uses: actions/upload-artifact@v4
+    #   if: ${{ env.rIds }} != ''
+    #   with:
+    #     name: Release_win
+    #     path: Release\post
+    #     retention-days: ${{ env.VERSION_RETENTION_DAYS }}
   
   unit_test_db_mssql:
     runs-on: ubuntu-latest
@@ -147,7 +157,7 @@ jobs:
       # Label used to access the service container
       redis:
         # Docker Hub image
-        image: postgres:11
+        image: postgres:latest
         #
         ports:
           - 5432:5432
@@ -210,13 +220,14 @@ jobs:
       - uses: actions/checkout@v1
       - name: docfx
         run: |
-          curl -LO "https://github.com/dotnet/docfx/releases/download/v2.48/docfx.zip"
+          curl -L -o docfx.zip "https://github.com/dotnet/docfx/releases/download/v2.78.3/docfx-win-x64-v2.78.3.zip"
           powershell.exe -NoP -NonI -Command "Expand-Archive '.\docfx.zip' '.\docfx\'" 
           ./docfx/docfx.exe
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: CodeDocs
           path: _site
+          retention-days: ${{ env.VERSION_RETENTION_DAYS }}
 
   security:
     runs-on: ubuntu-latest

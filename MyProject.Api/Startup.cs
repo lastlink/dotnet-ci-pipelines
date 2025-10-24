@@ -49,9 +49,9 @@ namespace MyProject.Api
             {
                 // migrate the table
                 var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-                optionsBuilder.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
+                optionsBuilder.UseMySql(Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(connectionString));
                 var context = new ApplicationDbContext(optionsBuilder.Options);
-                context.Database.ExecuteSqlCommand(@"
+                context.Database.ExecuteSqlRaw(@"
                 CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
                 `MigrationId` VARCHAR(150) NOT NULL,
                 `ProductVersion` VARCHAR(32) NOT NULL,

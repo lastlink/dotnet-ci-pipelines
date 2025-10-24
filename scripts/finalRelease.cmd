@@ -6,6 +6,6 @@ echo %rIds%
 for %%a in ("%rIds:,=" "%") do (
     echo running single copy
     echo %%~a
-    copy "MyProject\bin\Release\netcoreapp3.1\%%~a\publish\*" "%folder%\%%~a" /y
-    copy "MyProject.Api\bin\Release\netcoreapp3.1\%%~a\publish\*" "%folder%\%%~a" /y
+    copy "MyProject\bin\Release\net9.0\%%~a\publish\*" "%folder%\%%~a" /y
+    copy "MyProject.Api\bin\Release\net9.0\%%~a\publish\*" "%folder%\%%~a" /y
 )
