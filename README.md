@@ -15,7 +15,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 
 ### [ ] [GitHub Actions](https://github.com/lastlink/dotnet-ci-pipelines) [![Actions Status](https://github.com/lastlink/dotnet-ci-pipelines/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/lastlink/dotnet-ci-pipelines/actions/workflows/dotnetcore.yml)
 
-* [limits](https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions) 2,000 (per month) to 20 concurrent jobs support windows, ubuntu, mac
+* [limits](https://docs.github.com/en/billing/concepts/product-billing/github-actions) 2,000 (per month) to 20 concurrent jobs support windows, ubuntu, mac
     * doesn't currently support retry and max timeout although will cancel when limit reached.
 * [ ] Badges - workflow
 * [x] api docs - docfx html only
@@ -29,7 +29,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
   * [] obfuscators
 
 ### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
-* [limits](https://confluence.atlassian.com/bitbucket/limitations-of-bitbucket-pipelines-827106051.html) 50 minutes per month, support docker images
+* [limits](https://support.atlassian.com/bitbucket-cloud/docs/limitations-of-bitbucket-pipelines/) 50 minutes per month, support docker images
 * [ ] Badges
 * [x] api docs - docfx html only
 * [x]  Tests - working display
@@ -43,7 +43,7 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
   * mssql starts up, gives lots of details on docker image running, not enough detail for why test was failing
 
 ### [ ] [Azure DevOps](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines) [![Build Status](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_apis/build/status/dotnet%20ci%20pipelines?branchName=master)](https://dev.azure.com/funktechno/dotnet%20ci%20pipelines/_build/latest?definitionId=1&branchName=master) ![Coverage](https://img.shields.io/azure-devops/coverage/funktechno/dotnet%20ci%20pipelines/1)
-* [limits](https://azure.microsoft.com/en-us/services/devops/pipelines/) 1,800 minutes per month on private projects. $40 a month for unlimited minutes.
+* [limits](https://azure.microsoft.com/en-us/pricing/details/devops/azure-devops-services/) 1,800 minutes per month on private projects. $40 a month for unlimited minutes.
 * [ ] Badges?
   * [x] build
 * [x] api docs - docfx html only (pdf works locally, maybe self hosted runner)
