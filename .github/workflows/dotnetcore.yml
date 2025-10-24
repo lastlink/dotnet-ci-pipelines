@@ -10,6 +10,7 @@ env:
   CONTAINER_TAG: '0.85.2'
   rIds: ${{ secrets.rIds }}
   dotnetVersion: '9.x'
+  BUNDLE_RETENTION_DAYS: 7
 
 on:
   pull_request:
@@ -18,10 +19,6 @@ on:
   push:
     branches:
       - master
-
-# Configurable retention days for artifacts
-env:
-  BUNDLE_RETENTION_DAYS: 7
 
 jobs:
   build:
