@@ -51,7 +51,7 @@ namespace MyProject.Api
                 var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
                 optionsBuilder.UseMySQL(Configuration.GetConnectionString("DefaultConnection"));
                 var context = new ApplicationDbContext(optionsBuilder.Options);
-                context.Database.ExecuteSqlCommand(@"
+                context.Database.ExecuteSqlRaw(@"
                 CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
                 `MigrationId` VARCHAR(150) NOT NULL,
                 `ProductVersion` VARCHAR(32) NOT NULL,
