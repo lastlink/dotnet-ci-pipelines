@@ -192,7 +192,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   services:
-    localhost_postgres: pg11
+    localhost_postgres: postgres:latest
   steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 9.0'
