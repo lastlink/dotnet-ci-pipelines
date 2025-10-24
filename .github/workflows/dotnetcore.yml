@@ -220,7 +220,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: docfx
         run: |
-          curl -LO "https://github.com/dotnet/docfx/releases/download/v2.48/docfx.zip"
+          curl -L -o docfx.zip "https://github.com/dotnet/docfx/releases/download/v2.78.3/docfx-win-x64-v2.78.3.zip"
           powershell.exe -NoP -NonI -Command "Expand-Archive '.\docfx.zip' '.\docfx\'" 
           ./docfx/docfx.exe
       - uses: actions/upload-artifact@v4
