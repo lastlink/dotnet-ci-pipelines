@@ -11,7 +11,7 @@
 # https://gitlab.com/tobiaskoch/gitlab-ci-example-dotnetcore
 
 # see https://hub.docker.com/r/microsoft/dotnet/
-image: mcr.microsoft.com/dotnet/sdk:3.1
+image: mcr.microsoft.com/dotnet/sdk:9.0
 
 variables:
  NUGET_PACKAGES_DIRECTORY: '.nupkg'
@@ -124,7 +124,7 @@ unit_test_db_postgres:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
       when: always
   services:
-    - name: postgres:12.2-alpine
+    - name: postgres:latest
       alias: localhost_postgres
   # rules:
     # - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
@@ -167,10 +167,9 @@ sonarcloud_check_master:
     GIT_SUBMODULE_STRATEGY: recursive
   stage: quality
   before_script:
-    - apt-get update && apt-get install -qq -y openjdk-8-jre > /dev/null
+    - . scripts/sonar_before_script.sh
     - java -version
-    - dotnet tool install dotnet-sonarscanner --tool-path tools --version 4.10.0
-    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.10.0/dotnet-sonarscanner/4.10.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
+    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/5.5.3/dotnet-sonarscanner/5.5.3/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
     - dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
     - 'ls tools'
     - 'dotnet restore'
@@ -238,10 +237,9 @@ sonarcloud_check:
     GIT_SUBMODULE_STRATEGY: recursive
   stage: quality
   before_script:
-    - apt-get update && apt-get install -qq -y openjdk-8-jre > /dev/null
+    - . scripts/sonar_before_script.sh
     - java -version
-    - dotnet tool install dotnet-sonarscanner --tool-path tools --version 4.10.0
-    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/4.10.0/dotnet-sonarscanner/4.10.0/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
+    - cp SonarQube.Analysis.xml tools/.store/dotnet-sonarscanner/5.5.3/dotnet-sonarscanner/5.5.3/tools/netcoreapp3.0/any/SonarQube.Analysis.xml
     - 'ls tools'
     - 'dotnet restore'
   script:
