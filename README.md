@@ -28,7 +28,9 @@ Originally off of [gitlab-ci-example-dotnetcore](https://gitlab.com/tobiaskoch/g
 * [] release
   * [] obfuscators
 
-### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src)
+### [ ] [Bitbucket](https://bitbucket.org/lastlink/dotnet-ci-pipelines/src) ![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/lastlink/dotnet-ci-pipelines/master)
+
+
 * [limits](https://support.atlassian.com/bitbucket-cloud/docs/limitations-of-bitbucket-pipelines/) 50 minutes per month, support docker images
 * [ ] Badges
 * [x] api docs - docfx html only
