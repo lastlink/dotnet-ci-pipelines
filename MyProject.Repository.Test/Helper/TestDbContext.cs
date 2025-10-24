@@ -163,7 +163,7 @@ namespace MyProject.Repository.Test.Helper
                     var tmpContext = new TmpContext(tmpOptionsBuilder.Options);
                     // need to create w/out migrations
                     tmpContext.Database.EnsureCreated();
-                    dbContext.Database.ExecuteSqlCommand(@"
+                    dbContext.Database.ExecuteSqlRaw(@"
                 CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
                 `MigrationId` VARCHAR(150) NOT NULL,
                 `ProductVersion` VARCHAR(32) NOT NULL,
